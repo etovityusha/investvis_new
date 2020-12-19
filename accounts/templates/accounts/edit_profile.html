@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Edit Profile | {{ user }} {{ super }}{% endblock %}
+
+{% block content %}
+    <div class="grid-100">
+        <h1>Редактирование профиля</h1>
+        <form method="POST" actions="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-dark btn-block">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}

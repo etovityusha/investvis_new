@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Profile | {{ user }} {{ super }}{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-sm">
+      <h1>Профиль</h1>
+    </div>
+
+    <div class="col-sm">
+      <a href="{% url 'accounts:edit_profile' %}">Редактировать профиль</a>
+    </div>
+
+    <div class="col-sm">
+      <a href="{% url 'accounts:change_password' %}">Изменить пароль</a></div>
+    </div>
+  </div>
+
+  <div class="row">
+    {% if not profile.first_name %}
+
+    <p>You have an empty profile.</p>
+    <a href="{% url 'accounts:edit_profile' %}">Add some info</a>
+
+    {% else %}
+
+    <div class="col-sm">
+      <div class="style2111"> <p><span class="">Имя</span>: {{ profile.first_name }}</p></div>
+      
+      <p><span class="underline">Email</span>: {{ profile.email }}</p>
+      <p><span class="underline">Город</span>: {{ profile.city }}</p>
+      <p><span class="underline">Страна</span>: {{ profile.country }}</p>
+    </div>
+
+    <div class="col-sm">
+      <p><span class="underline">Фамилия</span>: {{ profile.last_name }}</p>
+      <p><span class="underline">Дата рождения</span>: {{ profile.birth_date }}</p>
+      <p><span class="underline">Тип профиля</span>:
+      {% if profile.open_portfolio %}
+         Открытый
+      {% else %}
+        Закрытый
+      {% endif %}
+      </p>
+
+    </div>
+  </div>
+
+  <div class="row">
+      <p><span class="underline">Bio</span>: {{ profile.bio|safe }}</p>
+  </div>
+  {% endif %}
+  {% endblock %}
