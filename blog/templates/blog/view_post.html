@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+
+
+{% block content %}
+<div class="col-md-9">
+      <div class="card mb-3">
+          <div class="card-body">
+
+                  {%  if item.photo %}
+                    <img src="{{ item.photo.url }}" alt='' width="300" height="200" class="float-left mr-3">
+                  {% endif %}
+
+                  <div class="media-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text"> {{ item.content|linebreaksbr }} </p>
+                  </div>
+
+          </div>
+          <div class="card-footer text-muted">
+              <i>{{ item.category }}</i>  Дата публикации: {{ item.created_at|date:'d-m-Y H:m'}}
+          </div>
+      </div>
+</div>
+ {% endblock %}
