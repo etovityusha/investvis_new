@@ -31,3 +31,12 @@ class DealCreateForm(forms.ModelForm):
             'transaction_type': forms.Select(attrs={'class': 'form-control'}),
             'ticker': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class CompanyCreateForm(forms.ModelForm):
+    ticker = forms.TextInput()
+    currency = forms.Select()
+
+    class Meta:
+        model = models.Stock
+        fields = ('ticker', 'currency',)

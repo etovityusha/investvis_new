@@ -15,7 +15,7 @@ class SectorAdmin(admin.ModelAdmin):
 
 
 class IndustryAdmin(admin.ModelAdmin):
-    list_display = ('industry_title', 'industry_rus')
+    list_display = ('industry_title', 'industry_rus', 'sector')
 
 
 class StockAdmin(admin.ModelAdmin):

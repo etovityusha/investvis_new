@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Создание сделки
+    Добавление компании
 {% endblock %}
 
 {% block sidebar %}
@@ -9,14 +9,12 @@
 
 {% block content %}
     <div class="col-md-9">
-        Если вашей акции нет в нашей базе - вы можете её <a href="{% url 'company_create' %}">добавить</a>.
-
         <div class="mt-5">
         <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
 
-            <button type="submit" class="btn btn-dark btn-block">Создать</button>
+            <button type="submit" class="btn btn-dark btn-block">Добавить</button>
 
         </form>
         </div>

@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from . import forms, models
+from portfolio.services.add_company import download_and_save_stock_data
 
 
 class ReportImport(LoginRequiredMixin, CreateView):
@@ -45,3 +46,15 @@ class DealCreate(LoginRequiredMixin, CreateView):
         obj.cost_without_nkd = obj.quantity * obj.price
         obj.total_cost = obj.cost_without_nkd + obj.nkd
         return super(DealCreate, self).form_valid(form)
+
+
+class AddCompany(LoginRequiredMixin, CreateView):
+    form_class = forms.CompanyCreateForm
+    template_name = 'portfolio/create_company.html'
+    success_url = reverse_lazy('deal_create')
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj = download_and_save_stock_data(obj)
+        obj.save()
+        return super(AddCompany, self).form_valid(form)
