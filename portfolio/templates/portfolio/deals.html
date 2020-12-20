@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Совершенные сделки
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+   <a class="btn btn-dark ml-auto" href="{% url 'deal_create' %}" role="button">Добавить сделку</a>
+  </div>
+<br>
+</div>
+
+{% if deals %}
+
+<table class="table table-sm">
+    <thead class="thead-dark">
+        <tr>
+           <th scope="col">Дата</th>
+           <th scope="col">Тип операции</th>
+           <th scope="col">Тикер</th>
+           <th scope="col">Цена</th>
+            <th scope="col">Валюта</th>
+            <th scope="col">Количество</th>
+            <th scope="col">Стоимость</th>
+            <th scope="col">Комиссия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for deal in deals %}
+            <tr>
+              <td>{{ deal.date }}</td>
+              <td>{{ deal.transaction_type }}</td>
+              <td>{{ deal.ticker }}</td>
+                <td>{{ deal.price }}</td>
+              <td>{{ deal.currency }}</td>
+              <td>{{ deal.quantity }}</td>
+              <td>{{ deal.total_cost }}</td>
+              <td>{{ deal.fee }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% else %}
+
+    <div>
+        <h5>
+            У вас пока что нет совершенных сделок. <br>
+            Вы можете  <a href="{% url 'import_report' %}">импортировать</a>  их из брокерского отчёта или
+            <a href="{% url 'deal_create' %}"> создать вручную через форму</a>.
+        </h5>
+    </div>
+
+{% endif %}
+<br><br>.
+{% endblock %}
