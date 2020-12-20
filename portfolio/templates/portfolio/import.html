@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    Импорт сделок
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="h1">Импорт сделок с отчета брокера</div>
+         <div class="h5">Платформа поддерживает отчёты брокеров:</div>
+        <img src="{% static 'images/tinkoff_logo.png' %}" height="50">
+
+        <div class="mt-5">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-dark btn-block">Импортировать</button>
+
+        </form>
+        </div>
+    </div>
+{% endblock %}
