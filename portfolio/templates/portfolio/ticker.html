@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Акция :: {{ data.ticker }}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+                    {% if data.logo %}
+                        <img class="rounded-circle border border-dark" src="{{ data.logo.url }}" height="150" width=150">
+                    {% else %}
+                        <img src="\media\logos\unnamed.png" height="200" width="200">
+                    {% endif %}
+                </div>
+
+                <div class="col-6">
+                    <div class="h3">Тикер: {{ data.ticker }}</div>
+                    <div class="h5">Название компании: {{ data.name }}</div>
+                    <div class="h5">Валюта: {{ data.currency }}</div>
+                    <div class="h5">Сектор: {{ data.sector }}</div>
+                    <div class="h5">Индустрия: {{ data.industry }}</div>
+                </div>
+            </div>
+
+<br><br>
+
+<div class="row">
+
+                    <div class="h3">Сделки</div>
+            <table class="table table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                       <th scope="col">Дата</th>
+                       <th scope="col">Время</th>
+                         <th scope="col">Тип операции</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Общая стоимость</th>
+                        <th scope="col">Комиссия</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for d in deals %}
+                        <tr>
+                            <td>{{ d.date}}</td>
+                            <td>{{ d.time }}</td>
+                            <td>{{ d.transaction_type }}</td>
+                            <td>{{ d.price }} {{ d.currency }}</td>
+                            <td>{{ d.quantity}}</td>
+                            <td>{{ d.total_cost }} {{ d.currency }}</td>
+                            <td>{{ d.fee }} {{ d.currency }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            </div>
+
+<br><br>
+
+            <div class="row">
+            <div class="h3">Котировки</div>
+            <table class="table table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                       <th scope="col">Дата</th>
+                       <th scope="col">Цена открытия</th>
+                         <th scope="col">Макс. цена</th>
+                        <th scope="col">Мин. цена</th>
+                        <th scope="col">Цена закрытия</th>
+                        <th scope="col">Объём торгов</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for q in quotations %}
+                        <tr>
+                            <td>{{ q.date}}</td>
+                            <td>{{ q.open }}</td>
+                            <td>{{ q.high }}</td>
+                            <td>{{ q.low }}</td>
+                            <td>{{ q.close }}</td>
+                            <td>{{ q.volume }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

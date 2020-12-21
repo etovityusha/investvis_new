@@ -8,5 +8,6 @@ urlpatterns = [
     path('deals/', views.DealList.as_view(), name='deals'),
     path('deals/create/', views.DealCreate.as_view(), name='deal_create'),
 
-    path('add_company/', views.AddCompany.as_view(), name='company_create')
+    path('add_company/', views.AddCompany.as_view(), name='company_create'),
+    path('ticker/<str:ticker>/', views.ticker_page, name='ticker'),
 ]
