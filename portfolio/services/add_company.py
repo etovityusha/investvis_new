@@ -1,7 +1,13 @@
+from django.conf import settings
+
 import urllib
 import requests
 from lxml.html import fromstring
 from bs4 import BeautifulSoup
+from pandas_datareader import data as pdr
+from sqlalchemy import create_engine
+from datetime import datetime
+
 from .. import models
 
 
@@ -50,3 +56,27 @@ def _find_between(s, first, last):
         return s[start:end]
     except ValueError:
         return ""
+
+
+def download_stock_quotations(yahoo_finance_tickers: list, table_name='portfolio_stockprice') -> None:
+    """
+    Скачивает с yahoo finance и сохраняет в базе данных котировки акции с 2015 года
+    """
+    db_user = settings.DATABASES['default']['USER']
+    db_password = settings.DATABASES['default']['PASSWORD']
+    db_name = settings.DATABASES['default']['NAME']
+    db_host = settings.DATABASES['default']['HOST']
+    db_port = settings.DATABASES['default']['PORT']
+    database_url = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    engine = create_engine(database_url, echo=False)
+
+    for ticker in yahoo_finance_tickers:
+        try:
+            df = pdr.get_data_yahoo(ticker, start="2015-01-01", end=datetime.now().strftime("%Y-%m-%d")).reset_index()
+            df['ticker_id'] = str(models.Stock.objects.get(ticker=ticker.replace('.ME', '')).id)
+            df = df.drop(['Adj Close'], 1).rename({'Date': 'date', 'Open': 'open', 'High': 'high',
+                                                   'Low': 'low', 'Close': 'close', 'Volume': 'volume'}, axis=1)
+            df.to_sql(table_name, engine, if_exists='append', index=False)
+
+        except Exception as ex:
+            print(ticker, ex)

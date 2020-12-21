@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from . import forms, models
-from portfolio.services.add_company import download_and_save_stock_data
+from portfolio.services.add_company import download_and_save_stock_data, download_stock_quotations
 
 
 class ReportImport(LoginRequiredMixin, CreateView):
@@ -57,4 +57,5 @@ class AddCompany(LoginRequiredMixin, CreateView):
         obj = form.save(commit=False)
         obj = download_and_save_stock_data(obj)
         obj.save()
+        download_stock_quotations([obj.ticker_yf])
         return super(AddCompany, self).form_valid(form)
