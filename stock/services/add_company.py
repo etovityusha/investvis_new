@@ -8,19 +8,19 @@ from pandas_datareader import data as pdr
 from sqlalchemy import create_engine
 from datetime import datetime
 
-from .. import models
+from stock.models import Sector, Industry, Currency, Stock
 
 
 def download_and_save_stock_data(obj):
     obj.ticker_yf = obj.ticker
-    if obj.currency == models.Currency.objects.get(currency_ticker='RUB'):
+    if obj.currency == Currency.objects.get(currency_ticker='RUB'):
         obj.ticker_yf += '.ME'
     sector, name, industry = _download_stock_info_from_yahoo_finance_website(obj.ticker_yf)
-    obj.sector = models.Sector.objects.get(sector_title=sector)
+    obj.sector = Sector.objects.get(sector_title=sector)
     try:
-        obj.industry = models.Industry.objects.get(industry_title=industry, sector=obj.sector)
+        obj.industry = Industry.objects.get(industry_title=industry, sector=obj.sector)
     except:
-        obj.industry = models.Industry.objects.create(industry_title=industry, sector=obj.sector)
+        obj.industry = Industry.objects.create(industry_title=industry, sector=obj.sector)
     obj.name = name
     try:
         _save_logo_from_tinkoff(obj.ticker)
@@ -58,7 +58,7 @@ def _find_between(s, first, last):
         return ""
 
 
-def download_stock_quotations(yahoo_finance_tickers: list, table_name='portfolio_stockprice') -> None:
+def download_stock_quotations(yahoo_finance_tickers: list, table_name='stock_stockprice') -> None:
     """
     Скачивает с yahoo finance и сохраняет в базе данных котировки акции с 2015 года
     """
@@ -73,7 +73,7 @@ def download_stock_quotations(yahoo_finance_tickers: list, table_name='portfolio
     for ticker in yahoo_finance_tickers:
         try:
             df = pdr.get_data_yahoo(ticker, start="2015-01-01", end=datetime.now().strftime("%Y-%m-%d")).reset_index()
-            df['ticker_id'] = str(models.Stock.objects.get(ticker=ticker.replace('.ME', '')).id)
+            df['ticker_id'] = str(Stock.objects.get(ticker=ticker.replace('.ME', '')).id)
             df = df.drop(['Adj Close'], 1).rename({'Date': 'date', 'Open': 'open', 'High': 'high',
                                                    'Low': 'low', 'Close': 'close', 'Volume': 'volume'}, axis=1)
             df.to_sql(table_name, engine, if_exists='append', index=False)

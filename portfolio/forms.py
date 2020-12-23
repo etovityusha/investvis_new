@@ -1,14 +1,15 @@
+from django import forms
+
 from datetime import datetime
 
-from django import forms
-from . import models
+from portfolio.models import BrokerReport, Deal
 
 
 class BrokerReportForm(forms.ModelForm):
     report = forms.FileField(label='Выберите отчёт')
 
     class Meta:
-        model = models.BrokerReport
+        model = BrokerReport
         fields = ('broker', 'report')
         widgets = {
             'broker': forms.Select(attrs={'class': 'form-control'}),
@@ -25,18 +26,9 @@ class DealCreateForm(forms.ModelForm):
     fee = forms.DecimalField(label='Комиссия', widget=forms.TimeInput(attrs={'class': 'form-control'}))
 
     class Meta:
-        model = models.Deal
+        model = Deal
         fields = ('date', 'time', 'transaction_type', 'ticker', 'price',  'quantity',  'fee')
         widgets = {
             'transaction_type': forms.Select(attrs={'class': 'form-control'}),
             'ticker': forms.Select(attrs={'class': 'form-control'}),
         }
-
-
-class CompanyCreateForm(forms.ModelForm):
-    ticker = forms.TextInput()
-    currency = forms.Select()
-
-    class Meta:
-        model = models.Stock
-        fields = ('ticker', 'currency',)

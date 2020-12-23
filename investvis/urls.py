@@ -25,6 +25,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('', views.home, name='home'),
     path('blog/', include('blog.urls')),
-    path('portfolio/', include('portfolio.urls'))
+    path('portfolio/', include('portfolio.urls')),
+    path('stock/', include('stock.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
