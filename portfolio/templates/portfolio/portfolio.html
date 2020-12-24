@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Инвестиционный портфель
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+    <br><br><br>
+    <div class="row row-cols-1 row-cols-md-1">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+                <tr>
+                   <th scope="col">Акция</th>
+                   <th scope="col">Количество</th>
+                     <th scope="col">Стоимость</th>
+                    <th scope="col">Валюта</th>
+                    <th scope="col">Текущая цена</th>
+                    <th scope="col">Средняя цена покупки</th>
+                    <th scope="col">Доход</th>
+                   <th scope="col">Сектор</th>
+                    <th scope="col">Индустрия</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for stock in portfolio %}
+                    <tr>
+                        <td> <a href="{% url 'ticker' stock.ticker %}"> {{ stock.ticker }}</a> </td>
+                        <td>{{ stock.count}}</td>
+                        <td>{{ stock.cost|floatformat:2}}</td>
+                        <td>{{ stock.currency}}</td>
+                        <td>{{ stock.current_price|floatformat:2}}</td>
+                        <td>{{ stock.average_buy|floatformat:2}}</td>
+                        <td>{{ stock.change|floatformat:2}}%</td>
+                        <td>{{ stock.sector}}</td>
+                        <td>{{ stock.industry}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+    </div>
+{% endblock %}

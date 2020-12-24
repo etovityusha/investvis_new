@@ -1,9 +1,12 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from . import forms, models
+from .services.stats import get_info_for_portfolio_stats
 
 
 
@@ -46,3 +49,9 @@ class DealCreate(LoginRequiredMixin, CreateView):
         obj.cost_without_nkd = obj.quantity * obj.price
         obj.total_cost = obj.cost_without_nkd + obj.nkd
         return super(DealCreate, self).form_valid(form)
+
+
+@login_required
+def portfolio_stats(request):
+    portfolio = get_info_for_portfolio_stats(user_id=request.user.id)
+    return render(request, 'portfolio/portfolio.html', {'portfolio': portfolio})
