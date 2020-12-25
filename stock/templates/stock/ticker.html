@@ -83,10 +83,10 @@
                     {% for q in quotations %}
                         <tr>
                             <td>{{ q.date}}</td>
-                            <td>{{ q.open }}</td>
-                            <td>{{ q.high }}</td>
-                            <td>{{ q.low }}</td>
-                            <td>{{ q.close }}</td>
+                            <td>{{ q.open | floatformat:2 }}</td>
+                            <td>{{ q.high | floatformat:2 }}</td>
+                            <td>{{ q.low | floatformat:2 }}</td>
+                            <td>{{ q.close | floatformat:2 }}</td>
                             <td>{{ q.volume }}</td>
                         </tr>
                     {% endfor %}
