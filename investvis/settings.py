@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 import environ
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -140,3 +141,18 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/files/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'accounts/avatars')
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALAZER = 'json'
+
+
+CELERY_BEAT_SCHEDULE = {
+    'update_quotations': {
+        'task': 'stock.tasks.update_quotations',
+        'schedule': crontab(
+            minute=10, hour='10, 13, 15, 18, 19, 20, 21, 22, 23',
+            day_of_week='mon-fri'),
+    },
+}
