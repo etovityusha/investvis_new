@@ -48,13 +48,14 @@
       {% else %}
         Закрытый
       {% endif %}
-      </p>
 
+      </p>
+      <p><span class="underline">Валюта аналитики</span>: {{ profile.analytics_currency }}</p>
     </div>
   </div>
 
   <div class="row">
-      <p><span class="underline">Bio</span>: {{ profile.bio|safe }}</p>
+      <p><span class="underline">О себе</span>: {{ profile.bio|safe }}</p>
   </div>
   {% endif %}
   {% endblock %}
