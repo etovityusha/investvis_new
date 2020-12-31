@@ -73,3 +73,20 @@ class StockPrice(models.Model):
         verbose_name = 'Котировка'
         verbose_name_plural = 'Котировки'
         ordering = ['-date', 'ticker']
+
+
+class CurrencyCourse(models.Model):
+    currency1 = models.ForeignKey(Currency, verbose_name='Валюта 1', on_delete=models.CASCADE,
+                                  related_name='main_currency')
+    currency2 = models.ForeignKey(Currency, verbose_name='Валюта 2', on_delete=models.CASCADE,
+                                  related_name='second_currency')
+    date = models.DateField(db_index=True, verbose_name='Дата')
+    open = models.DecimalField(verbose_name='Цена открытия', max_digits=19, decimal_places=4)
+    high = models.DecimalField(verbose_name='Максимальная цена', max_digits=19, decimal_places=4)
+    low = models.DecimalField(verbose_name='Минимальная цена', max_digits=19, decimal_places=4)
+    close = models.DecimalField(verbose_name='Цена закрытия', max_digits=19, decimal_places=4)
+
+    class Meta:
+        verbose_name = 'Курс валют'
+        verbose_name_plural = 'Курсы валют'
+        ordering = ['-date', 'currency1', 'currency2']
