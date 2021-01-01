@@ -60,3 +60,25 @@ class Deal(models.Model):
         verbose_name_plural = 'Сделки'
         ordering = ['-date', '-time', 'total_cost']
 
+
+class PortfolioStateRow(models.Model):
+    """
+    Класс состояния позиции в потфлеле
+    """
+    STATES = (
+        ('O', 'Открытая'),
+        ('С', 'Закрытая'),
+    )
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    date = models.DateField(verbose_name='Дата')
+    ticker = models.ForeignKey(Stock, on_delete=models.CASCADE, verbose_name='Идентификатор')
+    state = models.CharField(verbose_name="Состояние позиции", max_length=1, choices=STATES)
+    quantity = models.IntegerField(verbose_name='Количество')
+    average_buy_price = models.DecimalField(verbose_name='Средняя цена покупки', max_digits=19, decimal_places=4)
+    change = models.DecimalField(verbose_name='Изменение стоимости', max_digits=19, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'Состояние'
+        verbose_name_plural = 'Состояния'
+        ordering = ['-date', 'user', ]
+        unique_together = ['user', 'date', 'ticker', 'state', ]
