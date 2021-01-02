@@ -8,7 +8,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-9">
+    <p>
+    <div class="col-md-12">
         <div class="container">
             <div class="row">
                 <div class="col-3">
@@ -26,16 +27,25 @@
                     <div class="h5">Сектор: {{ data.sector }}</div>
                     <div class="h5">Индустрия: {{ data.industry }}</div>
                 </div>
-            </div>
 
-<br><br>
+                <div class="col-2">
+                    <h3>{{ current_price | floatformat:2 }}</h3>
+                    {% if last_day_change < 0 %}
+                    <div class="text-danger"> {{ last_day_change | floatformat:2 }} ({{ last_day_change_percent }}%)
+                    {% else %}
+                    <div class="text-success"> {{ last_day_change | floatformat:2 }} (+{{ last_day_change_percent }}%)
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+</p>
 
         {% if open %}
             <p>
-            В вашем портфеле:
             {% for item in open %}
-                {{ item.quantity }} шт. со средней ценой покупки {{ item.average_buy_price | floatformat:2 }}.<br>
-                Текущая бумажная прибыль {{ item.change }}%
+            <h3>Портфель:</h3>
+            <p>Количество: {{ item.quantity }} шт.</p>
+            <p>Средняя цена покупки: {{ item.average_buy_price | floatformat:2 }}</p>
             {% endfor %}
             </p>
         {% endif %}
@@ -44,25 +54,22 @@
                 <p>
             Вы продали
             {% for item in closed %}
-                {{ item.quantity }} шт. со средним доходом {{ item.change | floatformat:2 }}%
+                {{ item.quantity }} шт.
             {% endfor %}
                 </p>
         {% endif %}
 
 
 <div class="row">
-
                     <div class="h3">Сделки</div>
             <table class="table table-sm">
                 <thead class="thead-dark">
                     <tr>
                        <th scope="col">Дата</th>
-                       <th scope="col">Время</th>
                          <th scope="col">Тип операции</th>
                         <th scope="col">Цена</th>
                         <th scope="col">Количество</th>
                         <th scope="col">Общая стоимость</th>
-                        <th scope="col">Комиссия</th>
                     </tr>
                 </thead>
 
@@ -70,12 +77,10 @@
                     {% for d in deals %}
                         <tr>
                             <td>{{ d.date}}</td>
-                            <td>{{ d.time }}</td>
                             <td>{{ d.transaction_type }}</td>
                             <td>{{ d.price }} {{ d.currency }}</td>
                             <td>{{ d.quantity}}</td>
                             <td>{{ d.total_cost }} {{ d.currency }}</td>
-                            <td>{{ d.fee }} {{ d.currency }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -83,7 +88,6 @@
 
             </div>
 
-<br><br>
 
             <div class="row">
             <div class="h3">Котировки</div>

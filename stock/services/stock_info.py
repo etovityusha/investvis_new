@@ -2,7 +2,6 @@ from portfolio.models import Deal
 from stock.models import Stock, StockPrice
 from portfolio.models import PortfolioStateRow
 
-from datetime import datetime
 
 def get_data_about_stock(stock_ticker: str):
     """
@@ -42,3 +41,8 @@ def get_closed_position(stock_ticker: str, user_id):
     return PortfolioStateRow.objects.filter(user_id=user_id,
                                             ticker=Stock.objects.get(ticker=stock_ticker).id,
                                             state='C')
+
+
+def get_current_price_and_last_day_change(stock_ticker: str):
+    prices = StockPrice.objects.filter(ticker=Stock.objects.get(ticker=stock_ticker)).values_list('close', flat=True)
+    return prices[0], int(((prices[0] / prices[1]) * 100 - 100) * 100) / 100, (prices[0] - prices[1])

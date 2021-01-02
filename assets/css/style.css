@@ -1,3 +1,7 @@
-underline{
-	font-size: 40 px;
+.last_day_change_negative {
+	color: red;
+}
+
+.last_day_change_positive {
+	color: #33FF3C;
 }

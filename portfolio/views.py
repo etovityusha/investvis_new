@@ -9,7 +9,6 @@ from . import forms, models
 from .services.stats import get_open_portfolio_rows_by_user
 
 
-
 class ReportImport(LoginRequiredMixin, CreateView):
     form_class = forms.BrokerReportForm
     template_name = 'portfolio/import.html'
@@ -45,9 +44,7 @@ class DealCreate(LoginRequiredMixin, CreateView):
         obj = form.save(commit=False)
         obj.user = self.request.user
         obj.currency = models.Stock.objects.get(ticker=obj.ticker).currency
-        obj.nkd = 0
-        obj.cost_without_nkd = obj.quantity * obj.price
-        obj.total_cost = obj.cost_without_nkd + obj.nkd
+        obj.total_cost = obj.quantity * obj.price
         return super(DealCreate, self).form_valid(form)
 
 

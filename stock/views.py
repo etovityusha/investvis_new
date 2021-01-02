@@ -32,9 +32,13 @@ def ticker_page(request, ticker):
     deals = stock_info.get_deals_with_this_stock(ticker, request.user)
     open_position = stock_info.get_open_position(ticker, request.user)
     closed_position = stock_info.get_closed_position(ticker, request.user)
+    current_price, last_day_change_percent, last_day_change = stock_info.get_current_price_and_last_day_change(ticker)
     return render(request, 'stock/ticker.html', {'data': data,
                                                  'quotations': quotations,
                                                  'deals': deals,
                                                  'open': open_position,
                                                  'closed': closed_position,
+                                                 'current_price': current_price,
+                                                 'last_day_change_percent': last_day_change_percent,
+                                                 'last_day_change': last_day_change,
                                                  })
