@@ -8,7 +8,8 @@
 {% endblock %}
 
 {% block content %}
-    <br><br><br>
+<p>
+    {% if portfolio_open %}
     <div class="row row-cols-1 row-cols-md-1">
         <table class="table table-sm">
             <thead class="thead-dark">
@@ -26,14 +27,14 @@
             </thead>
 
             <tbody>
-                {% for stock in portfolio %}
+                {% for stock in portfolio_open %}
                     <tr>
                         <td> <a href="{% url 'ticker' stock.ticker %}"> {{ stock.ticker }}</a> </td>
-                        <td>{{ stock.count}}</td>
+                        <td>{{ stock.quantity}}</td>
                         <td>{{ stock.cost|floatformat:2}}</td>
                         <td>{{ stock.currency}}</td>
                         <td>{{ stock.current_price|floatformat:2}}</td>
-                        <td>{{ stock.average_buy|floatformat:2}}</td>
+                        <td>{{ stock.average_buy_price|floatformat:2}}</td>
                         <td>{{ stock.change|floatformat:2}}%</td>
                         <td>{{ stock.sector}}</td>
                         <td>{{ stock.industry}}</td>
@@ -42,4 +43,8 @@
             </tbody>
     </table>
     </div>
+    {% else %}
+    <h3> У вас в портфеле нет открытых позиций.</h3>
+    {% endif %}
+    </p>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from . import forms, models
-from .services.stats import get_info_for_portfolio_stats
+from .services.stats import get_open_portfolio_rows_by_user
 
 
 
@@ -53,5 +53,5 @@ class DealCreate(LoginRequiredMixin, CreateView):
 
 @login_required
 def portfolio_stats(request):
-    portfolio = get_info_for_portfolio_stats(user_id=request.user.id)
-    return render(request, 'portfolio/portfolio.html', {'portfolio': portfolio})
+    portfolio_open = get_open_portfolio_rows_by_user(user=request.user)
+    return render(request, 'portfolio/portfolio.html', {'portfolio_open': portfolio_open})

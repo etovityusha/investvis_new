@@ -30,7 +30,11 @@ def ticker_page(request, ticker):
     data = stock_info.get_data_about_stock(ticker)
     quotations = stock_info.get_stock_quotations(ticker, 30)
     deals = stock_info.get_deals_with_this_stock(ticker, request.user)
+    open_position = stock_info.get_open_position(ticker, request.user)
+    closed_position = stock_info.get_closed_position(ticker, request.user)
     return render(request, 'stock/ticker.html', {'data': data,
-                                                     'quotations': quotations,
-                                                     'deals': deals,
-                                                     })
+                                                 'quotations': quotations,
+                                                 'deals': deals,
+                                                 'open': open_position,
+                                                 'closed': closed_position,
+                                                 })

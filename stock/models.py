@@ -11,7 +11,7 @@ class Sector(models.Model):
         ordering = ['sector_title']
 
     def __str__(self):
-        return self.sector_title
+        return self.sector_rus
 
 
 class Industry(models.Model):
@@ -25,7 +25,7 @@ class Industry(models.Model):
         ordering = ['industry_title']
 
     def __str__(self):
-        return self.industry_title
+        return self.industry_rus
 
 
 class Currency(models.Model):

@@ -1,26 +1,18 @@
 from django.contrib.auth.models import User
 from portfolio.models import Deal, TransactionType, PortfolioStateRow
-from stock.models import StockPrice, Stock
+from stock.models import Stock
 
 import numpy as np
-from pandas import date_range
-from datetime import datetime
 
 
-def update_portfolio_row_states_from(user_id: int, ticker: str, date: str) -> None:
+def update_portfolio_row_states(user_id: int, ticker: str):
     user = User.objects.get(pk=user_id)
-    for date in date_range(start=date, end=datetime.today()):
-        _update_portfolio_row_state(user, ticker, date)
-
-
-def _update_portfolio_row_state(user: User, ticker: str, date: str) -> None:
+    stock = Stock.objects.get(ticker=ticker)
     deals_buy = Deal.objects.filter(user=user,
-                                    ticker=Stock.objects.get(ticker=ticker),
-                                    date__lte=date,
+                                    ticker=stock,
                                     transaction_type=TransactionType.objects.get(tt_title='Покупка'))
     deals_sell = Deal.objects.filter(user=user,
-                                     ticker=Stock.objects.get(ticker=ticker),
-                                     date__lte=date,
+                                     ticker=stock,
                                      transaction_type=TransactionType.objects.get(tt_title='Продажа'))
     buys, sells = [], []
     for deal in deals_buy:
@@ -35,24 +27,20 @@ def _update_portfolio_row_state(user: User, ticker: str, date: str) -> None:
         average_buy = np.mean(buys[:number_of_sold])
         average_sell = np.mean(sells)
         PortfolioStateRow.objects.update_or_create(user=user,
-                                                   date=date,
-                                                   ticker=Stock.objects.get(ticker=ticker),
+                                                   ticker=stock,
                                                    state='C',
                                                    defaults={
                                                        'quantity': number_of_sold,
                                                        'average_buy_price': average_buy,
-                                                       'change': (average_sell/average_buy - 1) * 100,
+                                                       'average_sell_price': average_sell,
                                                    })
     if buys:
         average_buy = np.mean(buys[len(sells):])
-        price = StockPrice.objects.filter(ticker=Stock.objects.get(ticker=ticker), date__lte=date).\
-            values_list('close', flat=True)[0]
         PortfolioStateRow.objects.update_or_create(user=user,
-                                                   date=date,
-                                                   ticker=Stock.objects.get(ticker=ticker),
+                                                   ticker=stock,
                                                    state='O',
                                                    defaults={
-                                                       'quantity': len(buys)-len(sells),
+                                                       'quantity': len(buys) - len(sells),
                                                        'average_buy_price': average_buy,
-                                                       'change': (price / average_buy - 1) * 100,
+                                                       'average_sell_price': None,
                                                    })

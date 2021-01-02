@@ -30,6 +30,26 @@
 
 <br><br>
 
+        {% if open %}
+            <p>
+            В вашем портфеле:
+            {% for item in open %}
+                {{ item.quantity }} шт. со средней ценой покупки {{ item.average_buy_price | floatformat:2 }}.<br>
+                Текущая бумажная прибыль {{ item.change }}%
+            {% endfor %}
+            </p>
+        {% endif %}
+
+            {% if closed %}
+                <p>
+            Вы продали
+            {% for item in closed %}
+                {{ item.quantity }} шт. со средним доходом {{ item.change | floatformat:2 }}%
+            {% endfor %}
+                </p>
+        {% endif %}
+
+
 <div class="row">
 
                     <div class="h3">Сделки</div>
