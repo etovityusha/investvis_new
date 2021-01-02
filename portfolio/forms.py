@@ -18,16 +18,14 @@ class BrokerReportForm(forms.ModelForm):
 
 class DealCreateForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control'}), initial=datetime.now, label='Дата')
-    time = forms.TimeField(initial=datetime.now, label='Время', widget=forms.TimeInput(attrs={'class': 'form-control'}))
     transaction_type = forms.Select()
     ticker = forms.Select()
     price = forms.DecimalField(label='Цена за ед.', widget=forms.TimeInput(attrs={'class': 'form-control'}))
     quantity = forms.IntegerField(label='Количество', widget=forms.TimeInput(attrs={'class': 'form-control'}))
-    fee = forms.DecimalField(label='Комиссия', widget=forms.TimeInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Deal
-        fields = ('date', 'time', 'transaction_type', 'ticker', 'price',  'quantity',  'fee')
+        fields = ('date', 'transaction_type', 'ticker', 'price',  'quantity',)
         widgets = {
             'transaction_type': forms.Select(attrs={'class': 'form-control'}),
             'ticker': forms.Select(attrs={'class': 'form-control'}),

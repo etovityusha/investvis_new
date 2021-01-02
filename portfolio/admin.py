@@ -19,9 +19,9 @@ class CurrencyAdmin(admin.ModelAdmin):
 
 
 class DealAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date', 'time', 'transaction_type', 'ticker', 'price', 'currency', 'quantity',
-                    'cost_without_nkd', 'nkd', 'total_cost', 'fee')
-    list_filter = ('user', 'date', 'time', 'transaction_type', 'ticker', 'total_cost',)
+    list_display = ('user', 'date', 'transaction_type', 'ticker', 'price', 'currency', 'quantity',
+                    'total_cost', )
+    list_filter = ('user', 'date', 'transaction_type', 'ticker', 'total_cost', )
 
 
 admin.site.register(models.Broker, BrokerAdmin)

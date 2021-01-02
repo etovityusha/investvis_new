@@ -42,23 +42,18 @@ class TransactionType(models.Model):
 class Deal(models.Model):
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
     date = models.DateField(verbose_name='Дата')
-    time = models.TimeField(verbose_name='Время')
     transaction_type = models.ForeignKey(TransactionType, on_delete=models.CASCADE, verbose_name='Тип операции')
     ticker = models.ForeignKey(Stock, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Идентификатор')
     price = models.DecimalField(null=True, blank=True, verbose_name='Цена', max_digits=19, decimal_places=2)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, verbose_name='Валюта')
     quantity = models.IntegerField(verbose_name='Количество')
-    cost_without_nkd = models.DecimalField(null=True, blank=True, verbose_name='Стоимость без НКД', max_digits=19,
-                                           decimal_places=2)
-    nkd = models.DecimalField(null=True, blank=True, verbose_name='НКД', max_digits=19, decimal_places=2)
     total_cost = models.DecimalField(null=True, blank=True, verbose_name='Общая стоимость', max_digits=19,
                                      decimal_places=2)
-    fee = models.DecimalField(null=True, blank=True, verbose_name='Комиссия', max_digits=19, decimal_places=2)
 
     class Meta:
         verbose_name = 'Сделка'
         verbose_name_plural = 'Сделки'
-        ordering = ['-date', '-time', 'total_cost']
+        ordering = ['-date', 'total_cost']
 
 
 class PortfolioStateRow(models.Model):
@@ -70,15 +65,15 @@ class PortfolioStateRow(models.Model):
         ('С', 'Закрытая'),
     )
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
-    date = models.DateField(verbose_name='Дата')
     ticker = models.ForeignKey(Stock, on_delete=models.CASCADE, verbose_name='Идентификатор')
     state = models.CharField(verbose_name="Состояние позиции", max_length=1, choices=STATES)
     quantity = models.IntegerField(verbose_name='Количество')
     average_buy_price = models.DecimalField(verbose_name='Средняя цена покупки', max_digits=19, decimal_places=4)
-    change = models.DecimalField(verbose_name='Изменение стоимости', max_digits=19, decimal_places=2)
+    average_sell_price = models.DecimalField(verbose_name='Средняя цена продажи', max_digits=19, decimal_places=4,
+                                             null=True, blank=True)
 
     class Meta:
         verbose_name = 'Состояние'
         verbose_name_plural = 'Состояния'
-        ordering = ['-date', 'user', ]
-        unique_together = ['user', 'date', 'ticker', 'state', ]
+        ordering = ['user', 'ticker']
+        unique_together = ['user', 'ticker', 'state', ]
