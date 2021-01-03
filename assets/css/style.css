@@ -1,7 +1,27 @@
 .last_day_change_negative {
-	color: red;
+	color: #651212;
 }
 
 .last_day_change_positive {
-	color: #33FF3C;
+	color: #173902;
+    font-size: 14px;
+}
+
+.simple_card {
+    border-radius: 25px;
+    border: 2px solid #bdbdbd;
+    padding: 20px;
+    font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Consolas, Courier New, monospace;
+}
+
+.circle_logotype{
+    border-radius: 50%;
+    border: 1px solid #bdbdbd;
+}
+
+.stock_price{
+    flex: 0 0 auto;
+    width: 16.6666666667%;
+    padding-top: 30px;
+    text-align: center;
 }
