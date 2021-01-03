@@ -5,9 +5,12 @@ from stock.models import Stock
 import numpy as np
 
 
-def update_portfolio_row_states(user_id: int, ticker: str):
-    user = User.objects.get(pk=user_id)
-    stock = Stock.objects.get(ticker=ticker)
+def update_portfolio_row_states(user: User, stock: Stock):
+    """
+    Обновляет в модели позиций портфеля статусы по позиции.
+    При наличии сделок с проадажами средняя цена покупки рассчитывается
+    по правилу FIFO. Read more: https://en.wikipedia.org/wiki/FIFO_and_LIFO_accounting
+    """
     deals_buy = Deal.objects.filter(user=user,
                                     ticker=stock,
                                     transaction_type=TransactionType.objects.get(tt_title='Покупка'))
@@ -34,6 +37,11 @@ def update_portfolio_row_states(user_id: int, ticker: str):
                                                        'average_buy_price': average_buy,
                                                        'average_sell_price': average_sell,
                                                    })
+    else:
+        try:
+            PortfolioStateRow.objects.filter(user=user, ticker=stock, state='C').delete()
+        except:
+            pass
     if buys:
         average_buy = np.mean(buys[len(sells):])
         PortfolioStateRow.objects.update_or_create(user=user,
