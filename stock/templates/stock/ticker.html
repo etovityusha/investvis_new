@@ -106,6 +106,16 @@
                 </p>
             {% endif %}
             <p>
+
+            <p>
+            <div class="simple_card">
+                <h3>График</h3>
+                {% if graph %}
+                    {{ graph|safe }}
+                {% endif %}
+            </div>
+            </p>
+
                 <div class="simple_card">
                     <div class="row">
                         <div class="h3">Котировки</div>

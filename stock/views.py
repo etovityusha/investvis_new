@@ -5,6 +5,7 @@ from django.views.generic import CreateView
 
 from stock.services import add_company, stock_info
 from stock.forms import CompanyCreateForm
+from stock.models import Stock
 
 
 class AddCompany(LoginRequiredMixin, CreateView):
@@ -27,12 +28,15 @@ def ticker_page(request, ticker):
         - сделки пользователя, отправившего запрос
         - котировки
     """
-    data = stock_info.get_data_about_stock(ticker)
-    quotations = stock_info.get_stock_quotations(ticker, 30)
-    deals = stock_info.get_deals_with_this_stock(ticker, request.user)
-    open_position = stock_info.get_open_position(ticker, request.user)
-    closed_position = stock_info.get_closed_position(ticker, request.user)
-    current_price, last_day_change_percent, last_day_change = stock_info.get_current_price_and_last_day_change(ticker)
+    stock = Stock.objects.get(ticker=ticker)
+
+    data = stock_info.get_data_about_stock(stock)
+    quotations = stock_info.get_stock_quotations(stock, 30)
+    deals = stock_info.get_deals_with_this_stock(stock, request.user)
+    open_position = stock_info.get_open_position(stock, request.user)
+    closed_position = stock_info.get_closed_position(stock, request.user)
+    current_price, last_day_change_percent, last_day_change = stock_info.get_current_price_and_last_day_change(stock)
+    graph = stock_info.graph(stock)
     return render(request, 'stock/ticker.html', {'data': data,
                                                  'quotations': quotations,
                                                  'deals': deals,
@@ -41,4 +45,5 @@ def ticker_page(request, ticker):
                                                  'current_price': current_price,
                                                  'last_day_change_percent': last_day_change_percent,
                                                  'last_day_change': last_day_change,
+                                                 'graph': graph,
                                                  })
