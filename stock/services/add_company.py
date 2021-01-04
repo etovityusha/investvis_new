@@ -1,13 +1,11 @@
-from django.conf import settings
-
 import urllib
 import requests
 from lxml.html import fromstring
 from bs4 import BeautifulSoup
 from pandas_datareader import data as pdr
-from sqlalchemy import create_engine
 from datetime import datetime
 
+from investvis.sqlalchemy_connect_db import create_alchemy_connect
 from stock.models import Sector, Industry, Currency, Stock
 
 
@@ -62,13 +60,7 @@ def download_stock_quotations(yahoo_finance_tickers: list, table_name='stock_sto
     """
     Скачивает с yahoo finance и сохраняет в базе данных котировки акции с 2015 года
     """
-    db_user = settings.DATABASES['default']['USER']
-    db_password = settings.DATABASES['default']['PASSWORD']
-    db_name = settings.DATABASES['default']['NAME']
-    db_host = settings.DATABASES['default']['HOST']
-    db_port = settings.DATABASES['default']['PORT']
-    database_url = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
-    engine = create_engine(database_url, echo=False)
+    engine = create_alchemy_connect()
 
     for ticker in yahoo_finance_tickers:
         try:
