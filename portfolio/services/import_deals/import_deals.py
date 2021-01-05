@@ -14,11 +14,8 @@ def preprocessing(instance, **kwargs):
         > котировки
         > информация (название, сектор, индустрия)
     """
-    deals = sum_identical_deals(
-        import_tinkoff.get_deals(instance.report)
-    )
+    deals = import_tinkoff.get_deals(instance.report)
     deals['id'] = instance.user
-    deals['date']= pd.to_datetime(deals['date'], format='%d.%m.%Y')
     stocks, bonds, currencies = split_deals_to_categories(deals)
     add_stocks_missing_info_to_db(stocks)
     add_deals_to_db(stocks)
