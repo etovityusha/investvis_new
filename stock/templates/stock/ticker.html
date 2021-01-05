@@ -31,12 +31,12 @@
                     </div>
 
                     <div class="stock_price">
-                        <h3>{{ current_price | floatformat:2 }}</h3>
+                        <h3>{{ current_price | floatformat:data.decimal_places }}</h3>
                         {% if last_day_change < 0 %}
-                            <div class="last_day_change_negative"> {{ last_day_change | floatformat:2 }}
+                            <div class="last_day_change_negative"> {{ last_day_change | floatformat:data.decimal_places }}
                             ({{ last_day_change_percent }}%)
                         {% else %}
-                            <div class="last_day_change_positive"> +{{ last_day_change | floatformat:2 }}
+                            <div class="last_day_change_positive"> +{{ last_day_change | floatformat:data.decimal_places }}
                             (+{{ last_day_change_percent }}%)
                         {% endif %}
                             </div>
@@ -51,7 +51,7 @@
                     {% for item in open %}
                         <h3>Портфель</h3>
                         <p>Количество: {{ item.quantity }} шт.</p>
-                        <p>Средняя цена покупки: {{ item.average_buy_price | floatformat:2 }} {{ data.currency }};
+                        <p>Средняя цена покупки: {{ item.average_buy_price | floatformat:data.decimal_places }} {{ data.currency }};
                         Стоимость
                             {% widthratio item.quantity 1 item.average_buy_price %} {{ data.currency }}
                             &#187;
@@ -135,10 +135,10 @@
                             {% for q in quotations %}
                                 <tr>
                                     <td>{{ q.date }}</td>
-                                    <td>{{ q.open | floatformat:2 }}</td>
-                                    <td>{{ q.high | floatformat:2 }}</td>
-                                    <td>{{ q.low | floatformat:2 }}</td>
-                                    <td>{{ q.close | floatformat:2 }}</td>
+                                    <td>{{ q.open | floatformat:data.decimal_places }}</td>
+                                    <td>{{ q.high | floatformat:data.decimal_places }}</td>
+                                    <td>{{ q.low | floatformat:data.decimal_places }}</td>
+                                    <td>{{ q.close | floatformat:data.decimal_places }}</td>
                                     <td>{{ q.volume }}</td>
                                 </tr>
                             {% endfor %}

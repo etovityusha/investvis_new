@@ -15,7 +15,9 @@ def get_data_about_stock(stock: Stock):
             'currency': stock.currency,
             'sector': stock.sector,
             'industry': stock.industry,
-            'logo': stock.logo}
+            'logo': stock.logo,
+            'decimal_places': stock.decimal_places,
+            }
 
 
 def get_stock_quotations(stock: Stock, n: int):
