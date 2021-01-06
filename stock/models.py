@@ -11,7 +11,7 @@ class Sector(models.Model):
         ordering = ['sector_title']
 
     def __str__(self):
-        return self.sector_rus
+        return self.sector_title
 
 
 class Industry(models.Model):
@@ -25,7 +25,7 @@ class Industry(models.Model):
         ordering = ['industry_title']
 
     def __str__(self):
-        return self.industry_rus
+        return self.industry_title
 
 
 class Currency(models.Model):
@@ -45,11 +45,12 @@ class Stock(models.Model):
     ticker = models.CharField(max_length=50, db_index=True, unique=True, verbose_name='Индентификатор')
     ticker_yf = models.CharField(max_length=50, db_index=True, unique=True,
                                  verbose_name='Индентификатор для Yahoo Finance', null=True)
-    name = models.CharField(max_length=200, verbose_name='Название')
-    sector = models.ForeignKey(Sector, on_delete=models.PROTECT, verbose_name='Сектор')
-    industry = models.ForeignKey(Industry, on_delete=models.PROTECT, verbose_name='Индустрия')
-    currency = models.ForeignKey(Currency, on_delete=models.PROTECT, verbose_name='Валюта')
+    name = models.CharField(max_length=200, verbose_name='Название', null=True, blank=True)
+    sector = models.ForeignKey(Sector, on_delete=models.PROTECT, verbose_name='Сектор', null=True, blank=True)
+    industry = models.ForeignKey(Industry, on_delete=models.PROTECT, verbose_name='Индустрия', null=True, blank=True)
+    currency = models.ForeignKey(Currency, on_delete=models.PROTECT, verbose_name='Валюта', null=True, blank=True)
     logo = models.ImageField(verbose_name='Логотип', blank=True, null=True, default=None, upload_to='documents/logos')
+    decimal_places = models.IntegerField(verbose_name='Десятичные знаки', default=2)
 
     class Meta:
         verbose_name = 'Акция'

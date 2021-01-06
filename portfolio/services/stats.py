@@ -18,7 +18,7 @@ class PortfolioRow(NamedTuple):
     industry: str
 
 
-def get_open_portfolio_rows_by_user(user: User):
+def get_open_portfolio_rows_by_user(user: User) -> list:
     ids = PortfolioStateRow.objects.filter(user=user, state='O').values_list('ticker', flat=True)
     average_buy_prices = PortfolioStateRow.objects.filter(user=user, state='O').values_list('average_buy_price',
                                                                                             flat=True)

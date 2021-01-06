@@ -6,7 +6,7 @@ from celery import shared_task
 
 
 @shared_task
-def update_quotations(date= datetime.today().strftime('%Y-%m-%d')) -> None:
+def update_quotations(date=datetime.today().strftime('%Y-%m-%d')) -> None:
     """
     Получает список акций сервиса.
     Создает новую запись в БД с текущей ценой или обновляет её.
