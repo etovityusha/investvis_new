@@ -1,5 +1,5 @@
 from portfolio.services.import_deals import import_tinkoff
-from portfolio.models import Deal, TransactionType
+from portfolio.models import Deal, TransactionType, Replenishment
 from stock.models import Stock, Currency
 from stock.services import add_company
 
@@ -14,6 +14,10 @@ def preprocessing(instance, **kwargs):
         > котировки
         > информация (название, сектор, индустрия)
     """
+    replenishments = import_tinkoff.get_replenishments(instance.report)
+    replenishments['id'] = instance.user
+    add_replenishments_to_db(replenishments)
+
     deals = import_tinkoff.get_deals(instance.report)
     deals['id'] = instance.user
     stocks, bonds, currencies = split_deals_to_categories(deals)
@@ -34,7 +38,8 @@ def add_deals_to_db(deals_dataframe):
                                         price=deal[4],
                                         currency=Currency.objects.get(currency_ticker=deal[5]),
                                         quantity=deal[6],
-                                        total_cost=deal[7]
+                                        total_cost=deal[7],
+                                        source='I',
                                         )
         except Exception as ex:
             print(ex)
@@ -82,3 +87,16 @@ def split_deals_to_categories(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame, 
     currencies = df[df['ticker'].isin(curs)]
     bonds = df[~df['ticker'].isin(set(list(stocks['ticker']) + list(currencies['ticker'])))]
     return stocks, bonds, currencies
+
+
+def add_replenishments_to_db(replenishments: pd.DataFrame):
+    for replenishment in replenishments.itertuples():
+        try:
+            saved = Replenishment.objects.create(user=replenishment[5],
+                                                 date=replenishment[1],
+                                                 count=replenishment[3],
+                                                 currency=Currency.objects.get(currency_ticker=replenishment[4]),
+                                                 source='I',
+                                                 )
+        except Exception as ex:
+            print(ex)

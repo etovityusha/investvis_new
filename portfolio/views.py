@@ -44,6 +44,7 @@ class DealCreate(LoginRequiredMixin, CreateView):
         obj = form.save(commit=False)
         obj.user = self.request.user
         obj.currency = models.Stock.objects.get(ticker=obj.ticker).currency
+        obj.source = 'F'
         obj.total_cost = obj.quantity * obj.price
         return super(DealCreate, self).form_valid(form)
 

@@ -2,6 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from stock.models import Stock, Currency
 
+SOURCES = (
+    ('I', 'Импорт'),
+    ('F', 'Форма'),
+)
+
 
 class Broker(models.Model):
     broker_title = models.CharField(max_length=150, db_index=True, verbose_name='Название')
@@ -49,6 +54,7 @@ class Deal(models.Model):
     quantity = models.IntegerField(verbose_name='Количество')
     total_cost = models.DecimalField(null=True, blank=True, verbose_name='Общая стоимость', max_digits=19,
                                      decimal_places=2)
+    source = models.CharField(max_length=1, verbose_name='Источник', choices=SOURCES, default='I')
 
     class Meta:
         verbose_name = 'Сделка'
@@ -77,3 +83,19 @@ class PortfolioStateRow(models.Model):
         verbose_name_plural = 'Состояния'
         ordering = ['user', 'ticker']
         unique_together = ['user', 'ticker', 'state', ]
+
+
+class Replenishment(models.Model):
+    """
+    Класс пополнения портфеля денежными средствами
+    """
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    date = models.DateField(verbose_name='Дата')
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, verbose_name='Валюта')
+    count = models.DecimalField(verbose_name='Сумма пополнения', max_digits=19, decimal_places=2)
+    source = models.CharField(max_length=1, verbose_name='Источник', choices=SOURCES, default='I')
+
+    class Meta:
+        verbose_name = 'Пополнение'
+        verbose_name_plural = 'Пополнения'
+        ordering = ['user', 'count', '-date']

@@ -17,6 +17,18 @@ def get_deals(excel_report_path) -> pd.DataFrame:
     )
 
 
+def get_replenishments(excel_report: str):
+    df = _add_new_currency_column(
+        _filter_rows_with_money(
+            pd.read_excel(excel_report)
+        )
+    )
+    df = df[df[df.columns[41]] == 'Пополнение счета'][[df.columns[0], df.columns[41], df.columns[65], 'currency']]
+    df.columns = ['date', 'transaction_type', 'sum', 'currency']
+    df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+    return df
+
+
 def _filter_rows_with_closed_transactions(df) -> pd.DataFrame:
     """
     Возвращает строки из раздела
@@ -48,8 +60,9 @@ def _filter_and_rename_columns(df: pd.DataFrame) -> pd.DataFrame:
     columns = df.columns
     df = df[[columns[5], columns[22], columns[33], columns[38], columns[43], columns[47], columns[63]]]
     df.columns = ['date', 'transaction_type', 'ticker', 'price', 'currency', 'quantity', 'cost']
-    df.to_datetime(df['date'], format='%d.%m.%Y')
-    return df.dropna()
+    df = df.dropna()
+    df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+    return df
 
 
 def _transfrom_tickers_with_deals_with_currencies(df: pd.DataFrame) -> pd.DataFrame:
@@ -85,3 +98,23 @@ def _delete_repo_deals(df: pd.DataFrame) -> pd.DataFrame:
     Read more: https://ru.wikipedia.org/wiki/%D0%A1%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%A0%D0%95%D0%9F%D0%9E
     """
     return df[df['transaction_type'].isin(['Покупка', 'Продажа'])]
+
+
+def _filter_rows_with_money(df) -> pd.DataFrame:
+    """
+    Возвращает строки из раздела
+    Операции с денежными средствами
+    """
+    return df.loc[range(
+        df.index[df[df.columns[0]] == '2. Операции с денежными средствами'][0] + 2,
+        df.index[df[df.columns[0]] == '3.1 Движение по ценным бумагам инвестора'][0])]
+
+
+def _add_new_currency_column(df):
+    first_col_values, currencies, current_cur = df[df.columns[0]], [], 'RUB'
+    for value in zip(first_col_values):
+        if value in ['RUB', 'USD', 'EUR']:
+            current_cur = value
+        currencies.append(current_cur)
+    df['currency'] = currencies
+    return df
