@@ -92,10 +92,10 @@ def split_deals_to_categories(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame, 
 def add_replenishments_to_db(replenishments: pd.DataFrame):
     for replenishment in replenishments.itertuples():
         try:
-            saved = Replenishment.objects.create(user=replenishment[5],
+            saved = Replenishment.objects.create(user=replenishment[4],
                                                  date=replenishment[1],
-                                                 count=replenishment[3],
-                                                 currency=Currency.objects.get(currency_ticker=replenishment[4]),
+                                                 count=replenishment[2],
+                                                 currency=Currency.objects.get(currency_ticker=replenishment[3]),
                                                  source='I',
                                                  )
         except Exception as ex:

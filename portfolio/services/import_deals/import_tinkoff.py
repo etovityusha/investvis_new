@@ -18,13 +18,17 @@ def get_deals(excel_report_path) -> pd.DataFrame:
 
 
 def get_replenishments(excel_report: str):
-    df = _add_new_currency_column(
-        _filter_rows_with_money(
+    """
+    Вовзращает датафрейм с пополнениями счета.
+    Список колонок: 'date', 'sum', 'currency'.
+    """
+    df = _filter_rows_with_money(
             pd.read_excel(excel_report)
         )
-    )
-    df = df[df[df.columns[41]] == 'Пополнение счета'][[df.columns[0], df.columns[41], df.columns[65], 'currency']]
-    df.columns = ['date', 'transaction_type', 'sum', 'currency']
+    df.columns = df.iloc[0]
+    df = _add_new_currency_column(df)
+    df = df[df['Операция'] == 'Пополнение счета'][['Дата', 'Сумма зачисления', 'currency']]
+    df.columns = ['date', 'sum', 'currency']
     df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
     return df
 
@@ -105,12 +109,18 @@ def _filter_rows_with_money(df) -> pd.DataFrame:
     Возвращает строки из раздела
     Операции с денежными средствами
     """
-    return df.loc[range(
+    df = df.loc[range(
         df.index[df[df.columns[0]] == '2. Операции с денежными средствами'][0] + 2,
+        df.index[df[df.columns[0]] == '3.1 Движение по ценным бумагам инвестора'][0] + 1)]
+    return df.loc[range(
+        df.index[df[df.columns[0]] == 'Дата'][0],
         df.index[df[df.columns[0]] == '3.1 Движение по ценным бумагам инвестора'][0])]
 
 
 def _add_new_currency_column(df):
+    """
+    Добавляет в датафрейм столбец с текущей валютой.
+    """
     first_col_values, currencies, current_cur = df[df.columns[0]], [], 'RUB'
     for value in zip(first_col_values):
         if value in ['RUB', 'USD', 'EUR']:
