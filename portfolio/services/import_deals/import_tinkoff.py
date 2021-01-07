@@ -7,6 +7,7 @@ def get_deals(excel_report_path) -> pd.DataFrame:
     Получает на вход отчёт брокера в формате Excel и возвращает датафрейм с совершенными сделками.
     """
     df = pd.read_excel(excel_report_path, decimal=",")
+    df.columns = df.iloc[6]
     return _delete_repo_deals(
         _transfrom_tickers_with_deals_with_currencies(
             _filter_and_rename_columns(
@@ -61,8 +62,8 @@ def _filter_and_rename_columns(df: pd.DataFrame) -> pd.DataFrame:
     Удаляет лишние столбцы и переименовывает их в общий вид.
     Столбец с датой переводит во временной ряд.
     """
-    columns = df.columns
-    df = df[[columns[5], columns[22], columns[33], columns[38], columns[43], columns[47], columns[63]]]
+    df = df[['Дата заклю\nчения', 'Вид сделки', 'Код актива', 'Цена за едини\nцу', 'Валю\nта цены',
+             'Количество', 'Сумма сделки']]
     df.columns = ['date', 'transaction_type', 'ticker', 'price', 'currency', 'quantity', 'cost']
     df = df.dropna()
     df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
