@@ -5,8 +5,10 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from accounts.models import Profile
 from . import forms, models
 from .services.stats import get_open_portfolio_rows_by_user
+from portfolio.services.analytics import scatter_plot_html, currencies_pie_html, sectors_pie_html
 
 
 class ReportImport(LoginRequiredMixin, CreateView):
@@ -53,3 +55,19 @@ class DealCreate(LoginRequiredMixin, CreateView):
 def portfolio_stats(request):
     portfolio_open = get_open_portfolio_rows_by_user(user=request.user)
     return render(request, 'portfolio/portfolio.html', {'portfolio_open': portfolio_open})
+
+
+@login_required
+def analytics(request):
+    portfolio_open = get_open_portfolio_rows_by_user(user=request.user)
+    base_currency = Profile.objects.get(user=request.user).analytics_currency
+    scatter_plot = scatter_plot_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+    currencies_pie = currencies_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+    sectors_pie = sectors_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+    return render(request, 'portfolio/analytics.html', {
+        'portfolio_open': portfolio_open,
+        'scatter_plot': scatter_plot,
+        'base_currency': base_currency,
+        'currencies_pie': currencies_pie,
+        'sectors_pie': sectors_pie,
+    })

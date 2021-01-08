@@ -9,4 +9,5 @@ urlpatterns = [
     path('deals/create/', views.DealCreate.as_view(), name='deal_create'),
 
     path('', views.portfolio_stats, name='portfolio'),
+    path('analytics/', views.analytics, name='analytics'),
 ]

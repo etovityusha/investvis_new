@@ -20,7 +20,12 @@ class StockPriceAdmin(admin.ModelAdmin):
     search_fields = ('date', 'ticker')
 
 
+class CurrencyCourseAdmin(admin.ModelAdmin):
+    list_display = ('date', 'currency1', 'currency2', 'close', )
+
+
 admin.site.register(models.StockPrice, StockPriceAdmin)
 admin.site.register(models.Sector, SectorAdmin)
 admin.site.register(models.Industry, IndustryAdmin)
 admin.site.register(models.Stock, StockAdmin)
+admin.site.register(models.CurrencyCourse, CurrencyCourseAdmin)

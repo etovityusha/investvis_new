@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Аналитика портфеля
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <p> <div style="text-align: center;"> Аналитика представлена в {{ base_currency }}. Вы её можете поменять в
+        настройках профиля. </div>
+        </p>
+
+        <div class="container">
+            <div class="simple_card">
+                {% autoescape off %} {{ scatter_plot | safe }} {% endautoescape %}
+            </div>
+        <p>
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="simple_card">
+                        <div style="text-align: center;"> Распределение по валютам (в {{ base_currency }}): </div>
+                        {% autoescape off %} {{ currencies_pie | safe }} {% endautoescape %}
+                    </div>
+                </div>
+
+
+                <div class="col-6">
+                    <div class="simple_card">
+                    <div style="text-align: center;"> Распределение по секторам (в {{ base_currency }}): </div>
+                        {% autoescape off %} {{ sectors_pie | safe }} {% endautoescape %}
+                    </div>
+                </div>
+
+            </div>
+
+        </p>
+        </div>
+    </div>
+{% endblock %}
