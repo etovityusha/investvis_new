@@ -6,10 +6,10 @@ from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
                                        PasswordChangeForm)
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
-from . import models
-from . import forms
+from accounts import models
+from accounts import forms
 
 
 def sign_in(request):
@@ -27,12 +27,12 @@ def sign_in(request):
                 else:
                     messages.error(
                         request,
-                        "That user account has been disabled."
+                        "Эта учетная запись пользователя была отключена."
                     )
             else:
                 messages.error(
                     request,
-                    "Username or password is incorrect."
+                    "Имя пользователя или пароль неверны."
                 )
     return render(request, 'accounts/sign_in.html', {'form': form})
 
@@ -50,7 +50,7 @@ def sign_up(request):
             login(request, user)
             messages.success(
                 request,
-                "You're now a user! You've been signed in, too."
+                "Теперь вы пользователь! Вы так же вошли в систему."
             )
             return HttpResponseRedirect(reverse('home'))
     return render(request, 'accounts/sign_up.html', {'form': form})
@@ -58,7 +58,7 @@ def sign_up(request):
 
 def sign_out(request):
     logout(request)
-    messages.success(request, "You've been signed out. Come back soon!")
+    messages.success(request, "Вы вышли из системы. Возвращайтесь скорее!")
     return HttpResponseRedirect(reverse('home'))
 
 
@@ -81,7 +81,7 @@ def edit_profile(request):
         form = forms.ProfileForm(instance=profile, data=request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Updated the Profile Successfully!")
+            messages.success(request, "Профиль успешно обновлен!")
             return HttpResponseRedirect(reverse('accounts:profile'))
 
     return render(request, 'accounts/edit_profile.html', {
@@ -96,7 +96,7 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            messages.success(request, 'Your password was successfully updated!')
+            messages.success(request, 'Ваш пароль успешно обновлен!')
             return HttpResponseRedirect(reverse('accounts:profile'))
     else:
         form = PasswordChangeForm(request.user)
