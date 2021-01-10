@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block content %}
+    <p>
+    {% if portfolio_open %}
     <div class="col-md-12">
         <p> <div style="text-align: center;"> Аналитика представлена в {{ base_currency }}. Вы её можете поменять в
         настройках профиля. </div>
@@ -40,4 +42,8 @@
         </p>
         </div>
     </div>
+    {% else %}
+        <h3> У вас в портфеле нет открытых позиций.</h3>
+    {% endif %}
+    </p>
 {% endblock %}

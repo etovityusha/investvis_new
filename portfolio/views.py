@@ -60,14 +60,19 @@ def portfolio_stats(request):
 @login_required
 def analytics(request):
     portfolio_open = get_open_portfolio_rows_by_user(user=request.user)
-    base_currency = Profile.objects.get(user=request.user).analytics_currency
-    scatter_plot = scatter_plot_html(portfolio_rows=portfolio_open, base_currency=base_currency)
-    currencies_pie = currencies_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
-    sectors_pie = sectors_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
-    return render(request, 'portfolio/analytics.html', {
-        'portfolio_open': portfolio_open,
-        'scatter_plot': scatter_plot,
-        'base_currency': base_currency,
-        'currencies_pie': currencies_pie,
-        'sectors_pie': sectors_pie,
-    })
+    if portfolio_open:
+        base_currency = Profile.objects.get(user=request.user).analytics_currency
+        scatter_plot = scatter_plot_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+        currencies_pie = currencies_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+        sectors_pie = sectors_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+        return render(request, 'portfolio/analytics.html', {
+            'portfolio_open': portfolio_open,
+            'scatter_plot': scatter_plot,
+            'base_currency': base_currency,
+            'currencies_pie': currencies_pie,
+            'sectors_pie': sectors_pie,
+        })
+    else:
+        return render(request, 'portfolio/analytics.html', {
+            'portfolio_open': False
+        })
