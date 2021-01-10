@@ -2,7 +2,6 @@ from django.db.models import Q
 
 from stock.models import CurrencyCourse, Currency
 
-from datetime import datetime
 import pandas as pd
 from decimal import Decimal
 import plotly.express as px
@@ -10,8 +9,7 @@ import plotly.graph_objects as go
 
 
 def _get_current_currency_courses(base_currency):
-    return CurrencyCourse.objects.filter(date__gte=datetime.now()).filter(Q(currency1=base_currency) |
-                                                                          Q(currency2=base_currency))
+    return CurrencyCourse.objects.all().filter(Q(currency1=base_currency) | Q(currency2=base_currency))
 
 
 def _get_current_currency_course(courses, base_cur: Currency, second_cur: Currency) -> Decimal:
@@ -26,7 +24,7 @@ def _get_current_currency_course(courses, base_cur: Currency, second_cur: Curren
 
 def scatter_plot_html(portfolio_rows, base_currency):
     courses = _get_current_currency_courses(base_currency)
-    df = pd.DataFrame(columns=['ticker', 'cost', 'change', 'sector'])
+    df = pd.DataFrame(columns=['Тикер', 'Стоимость', 'Изменение', 'Сектор'])
     i = 0
     for row in portfolio_rows:
         cost = row.cost
@@ -35,15 +33,15 @@ def scatter_plot_html(portfolio_rows, base_currency):
             cost *= cur_course
         df.loc[i] = [row.ticker, cost, row.change, row.sector]
         i += 1
-
-    df['cost'] = pd.to_numeric(df["cost"], downcast="float")
-    fig = px.scatter(df, x='cost', y='change', color='sector', hover_name='ticker', size='cost', text='ticker',
+    df = df.dropna()
+    df['Стоимость'] = pd.to_numeric(df["Стоимость"], downcast="float")
+    fig = px.scatter(df, x='Стоимость', y='Изменение', color='Сектор', hover_name='Тикер', size='Стоимость', text='Тикер',
                      hover_data={
-                         'change': ':.2f',
-                         'cost': ':.2f',
-                         'ticker': False,
+                         'Изменение': ':.2f',
+                         'Стоимость': ':.2f',
+                         'Тикер': False,
                      },
-                     height=600)
+                     height=600, size_max=40)
 
     fig.update_layout(legend={'title': {'font': {'size': 14}, 'text': 'Сектор: '},
                               'orientation': "h",
@@ -80,11 +78,11 @@ def currencies_pie_html(portfolio_rows, base_currency):
     trace = [go.Pie(labels=list(stocks_sum.keys()), values=list(stocks_sum.values()))]
     fig = go.Figure(data=trace)
     colors = px.colors.qualitative.Safe
-    fig.update_traces(hoverinfo='label+percent', texttemplate="<b>%{label}</b><br> %{value} <br>%{percent}",
+    fig.update_traces(hoverinfo='label+percent', texttemplate="<b>%{label}</b><br> %{value:.2f}",
                       textfont_size=16,
                       marker=dict(colors=colors, line=dict(color='#000000', width=1)))
     fig.update_layout(showlegend=False)
-    return fig.to_html(full_html=False, include_plotlyjs='cdn')
+    return fig.to_html(full_html=False, include_plotlyjs=False)
 
 
 def sectors_pie_html(portfolio_rows, base_currency):
@@ -93,17 +91,17 @@ def sectors_pie_html(portfolio_rows, base_currency):
     for row in portfolio_rows:
         course = _get_current_currency_course(courses, base_cur=base_currency, second_cur=row.currency)
         cost = row.cost * course
-        if row.sector.sector_title not in sectors.keys():
-            sectors[row.sector.sector_title] = cost
+        if row.sector.sector_rus not in sectors.keys():
+            sectors[row.sector.sector_rus] = cost
         else:
-            sectors[row.sector.sector_title] += cost
+            sectors[row.sector.sector_rus] += cost
 
     sectors = {k: v for k, v in sectors.items() if v != 0}
     trace = [go.Pie(labels=list(sectors.keys()), values=list(sectors.values()))]
     fig = go.Figure(data=trace)
     colors = px.colors.qualitative.Safe
-    fig.update_traces(hoverinfo='label+percent', texttemplate="<b>%{label}</b><br> %{value}",
+    fig.update_traces(hoverinfo='label+percent', texttemplate="<b>%{label}</b><br> %{value:.2f}",
                       textfont_size=14,
                       marker=dict(colors=colors, line=dict(color='#000000', width=1)))
     fig.update_layout(showlegend=False)
-    return fig.to_html(full_html=False, include_plotlyjs='cdn')
+    return fig.to_html(full_html=False, include_plotlyjs=False)
