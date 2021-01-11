@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -8,10 +9,11 @@ from stock.forms import CompanyCreateForm
 from stock.models import Stock
 
 
-class AddCompany(LoginRequiredMixin, CreateView):
+class AddCompany(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     form_class = CompanyCreateForm
     template_name = 'stock/create_company.html'
     success_url = reverse_lazy('deal_create')
+    success_message = "Акция успешно добавлена!"
 
     def form_valid(self, form):
         obj = form.save(commit=False)

@@ -93,4 +93,4 @@ def graph(stock: Stock):
             type="date"
         )
     )
-    return fig.to_html(full_html=False, default_height=700, default_width=900)
+    return fig.to_html(full_html=False)

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView
@@ -37,10 +38,11 @@ class DealList(LoginRequiredMixin, ListView):
         return models.Deal.objects.filter(user_id=self.request.user)
 
 
-class DealCreate(LoginRequiredMixin, CreateView):
+class DealCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     form_class = forms.DealCreateForm
     template_name = 'portfolio/create_deal.html'
     success_url = reverse_lazy('deals')
+    success_message = 'Сделка добавлена'
 
     def form_valid(self, form):
         obj = form.save(commit=False)
