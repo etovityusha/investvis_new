@@ -79,8 +79,8 @@ class PortfolioStateRow(models.Model):
                                              null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Состояние'
-        verbose_name_plural = 'Состояния'
+        verbose_name = 'Позиция'
+        verbose_name_plural = 'Позиции'
         ordering = ['user', 'ticker']
         unique_together = ['user', 'ticker', 'state', ]
 

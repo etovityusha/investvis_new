@@ -28,9 +28,15 @@ class ReplenishmentAdmin(admin.ModelAdmin):
     list_display = ('user', 'date', 'currency', 'count')
 
 
+class PortfolioStateRowAdmin(admin.ModelAdmin):
+    list_display = ('user', 'ticker', 'state', 'quantity', 'average_buy_price', 'average_sell_price', )
+    list_filter = ('user', 'ticker', 'state')
+
+
 admin.site.register(models.Broker, BrokerAdmin)
 admin.site.register(models.BrokerReport, BrokerReportAdmin)
 admin.site.register(models.TransactionType, TransactionTypeAdmin)
 admin.site.register(models.Currency, CurrencyAdmin)
 admin.site.register(models.Deal, DealAdmin)
 admin.site.register(models.Replenishment, ReplenishmentAdmin)
+admin.site.register(models.PortfolioStateRow, PortfolioStateRowAdmin)
