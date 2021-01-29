@@ -15,14 +15,16 @@ def preprocessing(instance, **kwargs):
         > информация (название, сектор, индустрия)
     """
     replenishments = import_tinkoff.get_replenishments(instance.report)
-    replenishments['id'] = instance.user
-    add_replenishments_to_db(replenishments)
+    if len(replenishments):
+        replenishments['id'] = instance.user
+        add_replenishments_to_db(replenishments)
 
     deals = import_tinkoff.get_deals(instance.report)
-    deals['id'] = instance.user
-    stocks, bonds, currencies = split_deals_to_categories(deals)
-    add_stocks_missing_info_to_db(stocks)
-    add_deals_to_db(stocks)
+    if len(deals):
+        deals['id'] = instance.user
+        stocks, bonds, currencies = split_deals_to_categories(deals)
+        add_stocks_missing_info_to_db(stocks)
+        add_deals_to_db(stocks)
 
 
 def add_deals_to_db(deals_dataframe):
