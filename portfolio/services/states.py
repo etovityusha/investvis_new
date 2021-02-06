@@ -11,12 +11,16 @@ def update_portfolio_row_states(user: User, stock: Stock):
     При наличии сделок с проадажами средняя цена покупки рассчитывается
     по правилу FIFO. Read more: https://en.wikipedia.org/wiki/FIFO_and_LIFO_accounting
     """
-    deals_buy = Deal.objects.filter(user=user,
-                                    ticker=stock,
-                                    transaction_type=TransactionType.objects.get(tt_title='Покупка'))
-    deals_sell = Deal.objects.filter(user=user,
-                                     ticker=stock,
-                                     transaction_type=TransactionType.objects.get(tt_title='Продажа'))
+    deals_buy = Deal.objects.filter(
+        user=user,
+        ticker=stock,
+        transaction_type=TransactionType.objects.get(tt_title='Покупка')
+    )
+    deals_sell = Deal.objects.filter(
+        user=user,
+        ticker=stock,
+        transaction_type=TransactionType.objects.get(tt_title='Продажа')
+    )
     buys, sells = [], []
     for deal in deals_buy:
         for i in range(deal.quantity):
@@ -26,6 +30,8 @@ def update_portfolio_row_states(user: User, stock: Stock):
             sells.append(deal.price)
 
     if sells:
+        if len(buys) == len(sells):
+            PortfolioStateRow.objects.filter(user=user, ticker=stock, state='O').first().delete()
         number_of_sold = len(sells)
         average_buy = np.mean(buys[:number_of_sold])
         average_sell = np.mean(sells)
@@ -42,7 +48,8 @@ def update_portfolio_row_states(user: User, stock: Stock):
             PortfolioStateRow.objects.filter(user=user, ticker=stock, state='C').delete()
         except:
             pass
-    if buys:
+
+    if len(buys) > len(sells):
         average_buy = np.mean(buys[len(sells):])
         PortfolioStateRow.objects.update_or_create(user=user,
                                                    ticker=stock,
