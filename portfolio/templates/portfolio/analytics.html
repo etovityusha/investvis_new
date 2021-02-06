@@ -36,7 +36,11 @@
                         {% autoescape off %} {{ sectors_pie | safe }} {% endautoescape %}
                     </div>
                 </div>
-
+            <p>
+            <div class="simple_card">
+                {% autoescape off %} {{ open_income | safe }} {% endautoescape %}
+            </div>
+            </p>
             </div>
 
         </p>
@@ -46,4 +50,12 @@
         <h3> У вас в портфеле нет открытых позиций.</h3>
     {% endif %}
     </p>
+
+{% if closed_income %}
+<p>
+<div class="simple_card">
+    {% autoescape off %} {{ closed_income | safe }} {% endautoescape %}
+</div>
+</p>
+{% endif %}
 {% endblock %}

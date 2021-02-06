@@ -7,9 +7,10 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from accounts.models import Profile
-from . import forms, models
-from .services.stats import get_open_portfolio_rows_by_user
-from portfolio.services.analytics import scatter_plot_html, currencies_pie_html, sectors_pie_html
+from portfolio import forms, models
+from portfolio.services.stats import get_open_portfolio_rows_by_user, get_closed_portfolio_rows_by_user
+from portfolio.services.analytics import scatter_plot_html, currencies_pie_html, sectors_pie_html,\
+    income_composition_graph_html, closed_income_composition_graph_html
 
 
 class ReportImport(LoginRequiredMixin, CreateView):
@@ -56,23 +57,33 @@ class DealCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 @login_required
 def portfolio_stats(request):
     portfolio_open = get_open_portfolio_rows_by_user(user=request.user)
-    return render(request, 'portfolio/portfolio.html', {'portfolio_open': portfolio_open})
+    return render(request, 'portfolio/portfolio.html', {
+        'portfolio_open': portfolio_open,
+    })
 
 
 @login_required
 def analytics(request):
     portfolio_open = get_open_portfolio_rows_by_user(user=request.user)
+    portfolio_closed = get_closed_portfolio_rows_by_user(user=request.user)
     if portfolio_open:
         base_currency = Profile.objects.get(user=request.user).analytics_currency
         scatter_plot = scatter_plot_html(portfolio_rows=portfolio_open, base_currency=base_currency)
         currencies_pie = currencies_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
         sectors_pie = sectors_pie_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+        open_income = income_composition_graph_html(portfolio_rows=portfolio_open, base_currency=base_currency)
+        if portfolio_closed:
+            closed_income = closed_income_composition_graph_html(portfolio_rows=portfolio_closed, base_currency=base_currency)
+        else:
+            closed_income = False
         return render(request, 'portfolio/analytics.html', {
             'portfolio_open': portfolio_open,
             'scatter_plot': scatter_plot,
             'base_currency': base_currency,
             'currencies_pie': currencies_pie,
             'sectors_pie': sectors_pie,
+            'open_income': open_income,
+            'closed_income': closed_income,
         })
     else:
         return render(request, 'portfolio/analytics.html', {

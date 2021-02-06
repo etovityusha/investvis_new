@@ -105,3 +105,55 @@ def sectors_pie_html(portfolio_rows, base_currency):
                       marker=dict(colors=colors, line=dict(color='#000000', width=1)))
     fig.update_layout(showlegend=False)
     return fig.to_html(full_html=False, include_plotlyjs=False)
+
+
+def income_composition_graph_html(portfolio_rows, base_currency):
+    profits = {}
+    courses = _get_current_currency_courses(base_currency)
+    for row in portfolio_rows:
+        profit = (row.current_price - row.average_buy_price) * row.quantity
+        profits[row.ticker] = round(profit * _get_current_currency_course(courses, base_currency, row.currency), 1)
+    profits = dict(sorted(profits.items(), key=lambda item: item[1], reverse=True))
+
+    fig = go.Figure(go.Waterfall(
+        orientation="v",
+        measure=["relative" for i in range(len(list(profits.keys())))] + ['total'],
+        x=list(profits.keys()) + ['total'],
+        textposition="outside",
+        textangle=-90,
+        texttemplate='%{text:.2s}',
+        text=list(profits.values()) + [sum(list(profits.values()))],
+        y=list(profits.values()) + [sum(list(profits.values()))],
+    ))
+
+    fig.update_layout(
+        title="Состав дохода (открытые позиции)",
+        showlegend=False
+    )
+    return fig.to_html(full_html=False, include_plotlyjs=False)
+
+
+def closed_income_composition_graph_html(portfolio_rows, base_currency):
+    profits = {}
+    courses = _get_current_currency_courses(base_currency)
+    for row in portfolio_rows:
+        profit = row.income
+        profits[row.ticker] = round(profit * _get_current_currency_course(courses, base_currency, row.currency), 1)
+    profits = dict(sorted(profits.items(), key=lambda item: item[1], reverse=True))
+
+    fig = go.Figure(go.Waterfall(
+        orientation="v",
+        measure=["relative" for i in range(len(list(profits.keys())))] + ['total'],
+        x=list(profits.keys()) + ['total'],
+        textposition="outside",
+        textangle=-90,
+        texttemplate='%{text:.2s}',
+        text=list(profits.values()) + [sum(list(profits.values()))],
+        y=list(profits.values()) + [sum(list(profits.values()))],
+    ))
+
+    fig.update_layout(
+        title="Состав дохода (закрытые позиции)",
+        showlegend=False
+    )
+    return fig.to_html(full_html=False, include_plotlyjs=False)
