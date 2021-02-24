@@ -1,8 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from stock.services import add_company, stock_info
 from stock.forms import CompanyCreateForm
@@ -23,29 +22,26 @@ class AddCompany(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return super(AddCompany, self).form_valid(form)
 
 
-def ticker_page(request, ticker):
+class StockDetail(DetailView):
     """
     Рендер страницы компании. Включает:
         - информацию о компании
         - сделки пользователя, отправившего запрос
         - котировки
     """
-    stock = Stock.objects.get(ticker=ticker)
+    model = Stock
+    template_name = 'stock/ticker.html'
+    slug_field = 'ticker'
+    slug_url_kwarg = 'ticker'
 
-    data = stock_info.get_data_about_stock(stock)
-    quotations = stock_info.get_stock_quotations(stock, 30)
-    deals = stock_info.get_deals_with_this_stock(stock, request.user)
-    open_position = stock_info.get_open_position(stock, request.user)
-    closed_position = stock_info.get_closed_position(stock, request.user)
-    current_price, last_day_change_percent, last_day_change = stock_info.get_current_price_and_last_day_change(stock)
-    graph = stock_info.graph(stock)
-    return render(request, 'stock/ticker.html', {'data': data,
-                                                 'quotations': quotations,
-                                                 'deals': deals,
-                                                 'open': open_position,
-                                                 'closed': closed_position,
-                                                 'current_price': current_price,
-                                                 'last_day_change_percent': last_day_change_percent,
-                                                 'last_day_change': last_day_change,
-                                                 'graph': graph,
-                                                 })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['data'] = stock_info.get_data_about_stock(self.object)
+        context['quotations'] = stock_info.get_stock_quotations(self.object, 30)
+        context['deals'] = stock_info.get_deals_with_this_stock(self.object, self.request.user)
+        context['open_position'] = stock_info.get_open_position(self.object, self.request.user)
+        context['closed_position'] = stock_info.get_closed_position(self.object, self.request.user)
+        context['current_price'], context['last_day_change_percent'], context['last_day_change'] = stock_info.\
+            get_current_price_and_last_day_change(self.object)
+        context['graph'] = stock_info.graph(self.object)
+        return context
