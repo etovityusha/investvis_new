@@ -17,10 +17,8 @@ class Profile(models.Model):
     email = models.EmailField(default='none@email.com', blank=True)
     birth_date = models.DateField(default='1999-12-31', blank=True)
     bio = models.TextField(default='', blank=True)
-    city = models.CharField(max_length=255, default='', blank=True)
-    country = models.CharField(max_length=255, default='', blank=True)
     open_portfolio = models.BooleanField(default=False)
-    analytics_currency = models.ForeignKey(Currency, default=2, on_delete=models.PROTECT)
+    analytics_currency = models.ForeignKey(Currency, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username

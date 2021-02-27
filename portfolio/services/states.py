@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from portfolio.models import Deal, TransactionType, PortfolioStateRow
+from portfolio.models import Deal, PortfolioStateRow
 from stock.models import Stock
 
 import numpy as np
@@ -14,12 +14,12 @@ def update_portfolio_row_states(user: User, stock: Stock):
     deals_buy = Deal.objects.filter(
         user=user,
         ticker=stock,
-        transaction_type=TransactionType.objects.get(tt_title='Покупка')
+        transaction_type='B'
     )
     deals_sell = Deal.objects.filter(
         user=user,
         ticker=stock,
-        transaction_type=TransactionType.objects.get(tt_title='Продажа')
+        transaction_type='S'
     )
     buys, sells = [], []
     for deal in deals_buy:

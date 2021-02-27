@@ -1,5 +1,5 @@
 from portfolio.services.import_deals import import_tinkoff
-from portfolio.models import Deal, TransactionType, Replenishment
+from portfolio.models import Deal, Replenishment
 from stock.models import Stock, Currency
 from stock.services import add_company
 
@@ -31,11 +31,15 @@ def add_deals_to_db(deals_dataframe):
     """
     Добавляет сделки с акциями, извлеченные из отчета, в базу.
     """
+    transactions = {
+        'Продажа': 'S',
+        'Покупка': 'B',
+    }
     for deal in deals_dataframe.itertuples():
         try:
             saved = Deal.objects.create(user=deal[8],
                                         date=deal[1],
-                                        transaction_type=TransactionType.objects.get(tt_title=deal[2]),
+                                        transaction_type=transactions[deal[2]],
                                         ticker=Stock.objects.get(ticker=deal[3]),
                                         price=deal[4],
                                         currency=Currency.objects.get(currency_ticker=deal[5]),
@@ -94,11 +98,12 @@ def split_deals_to_categories(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame, 
 def add_replenishments_to_db(replenishments: pd.DataFrame):
     for replenishment in replenishments.itertuples():
         try:
-            saved = Replenishment.objects.create(user=replenishment[4],
-                                                 date=replenishment[1],
-                                                 count=replenishment[2],
-                                                 currency=Currency.objects.get(currency_ticker=replenishment[3]),
-                                                 source='I',
-                                                 )
+            saved = Replenishment.objects.create(
+                user=replenishment[4],
+                date=replenishment[1],
+                count=replenishment[2],
+                currency=Currency.objects.get(currency_ticker=replenishment[3]),
+                source='I',
+            )
         except Exception as ex:
             print(ex)

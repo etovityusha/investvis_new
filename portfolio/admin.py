@@ -7,11 +7,7 @@ class BrokerAdmin(admin.ModelAdmin):
 
 
 class BrokerReportAdmin(admin.ModelAdmin):
-    list_display = ('user', 'broker', 'report', 'uploaded_at')
-
-
-class TransactionTypeAdmin(admin.ModelAdmin):
-    list_display = ('tt_title', )
+    list_display = ('user', 'broker', 'report', 'uploaded')
 
 
 class CurrencyAdmin(admin.ModelAdmin):
@@ -35,7 +31,6 @@ class PortfolioStateRowAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Broker, BrokerAdmin)
 admin.site.register(models.BrokerReport, BrokerReportAdmin)
-admin.site.register(models.TransactionType, TransactionTypeAdmin)
 admin.site.register(models.Currency, CurrencyAdmin)
 admin.site.register(models.Deal, DealAdmin)
 admin.site.register(models.Replenishment, ReplenishmentAdmin)

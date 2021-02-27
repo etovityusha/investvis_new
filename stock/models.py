@@ -64,10 +64,10 @@ class Stock(models.Model):
 class StockPrice(models.Model):
     date = models.DateField(db_index=True, verbose_name='Дата')
     ticker = models.ForeignKey(Stock, on_delete=models.CASCADE, verbose_name='Индентификатор')
-    open = models.DecimalField(verbose_name='Цена открытия', max_digits=19, decimal_places=4)
-    high = models.DecimalField(verbose_name='Максимальная цена', max_digits=19, decimal_places=4)
-    low = models.DecimalField(verbose_name='Минимальная цена', max_digits=19, decimal_places=4)
-    close = models.DecimalField(verbose_name='Цена закрытия', max_digits=19, decimal_places=4)
+    open = models.DecimalField(verbose_name='Цена открытия', max_digits=19, decimal_places=6)
+    high = models.DecimalField(verbose_name='Максимальная цена', max_digits=19, decimal_places=6)
+    low = models.DecimalField(verbose_name='Минимальная цена', max_digits=19, decimal_places=6)
+    close = models.DecimalField(verbose_name='Цена закрытия', max_digits=19, decimal_places=6)
     volume = models.IntegerField(verbose_name='Объём торгов')
 
     class Meta:
@@ -82,10 +82,10 @@ class CurrencyCourse(models.Model):
     currency2 = models.ForeignKey(Currency, verbose_name='Валюта 2', on_delete=models.CASCADE,
                                   related_name='second_currency')
     date = models.DateField(db_index=True, verbose_name='Дата')
-    open = models.DecimalField(verbose_name='Цена открытия', max_digits=19, decimal_places=4)
-    high = models.DecimalField(verbose_name='Максимальная цена', max_digits=19, decimal_places=4)
-    low = models.DecimalField(verbose_name='Минимальная цена', max_digits=19, decimal_places=4)
-    close = models.DecimalField(verbose_name='Цена закрытия', max_digits=19, decimal_places=4)
+    open = models.DecimalField(verbose_name='Цена открытия', max_digits=19, decimal_places=6)
+    high = models.DecimalField(verbose_name='Максимальная цена', max_digits=19, decimal_places=6)
+    low = models.DecimalField(verbose_name='Минимальная цена', max_digits=19, decimal_places=6)
+    close = models.DecimalField(verbose_name='Цена закрытия', max_digits=19, decimal_places=6)
 
     class Meta:
         verbose_name = 'Курс валют'

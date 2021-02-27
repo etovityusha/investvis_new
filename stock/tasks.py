@@ -24,24 +24,27 @@ def update_quotations(date=datetime.today().strftime('%Y-%m-%d')) -> None:
                                                     'close': data['Close'],
                                                     'volume': data['Volume']})
             print(f'{ticker_yf} updated')
-
-        except:
-            pass
+        except IndexError:
+            continue
 
 
 @shared_task
 def update_currency_quotations(date=datetime.today().strftime('%Y-%m-%d')) -> None:
     pairs = (('USD', 'RUB'), ('EUR', 'RUB'), ('EUR', 'USD'))
     for main, second in pairs:
-        df = yf.Ticker(f'{main}{second}=X').history().reset_index()
-        data = df[df['Date'] == date].iloc[0].to_dict()
-        CurrencyCourse.objects.update_or_create(currency1=Currency.objects.get(currency_ticker=main),
-                                                currency2=Currency.objects.get(currency_ticker=second),
-                                                date=date,
-                                                defaults={
-                                                    'open': data['Open'],
-                                                    'high': data['High'],
-                                                    'low': data['Low'],
-                                                    'close': data['Close'],
-                                                })
-        print(f'{main}/{second} updated')
+        try:
+            df = yf.Ticker(f'{main}{second}=X').history().reset_index()
+            data = df[df['Date'] == date].iloc[0].to_dict()
+            CurrencyCourse.objects.update_or_create(currency1=Currency.objects.get(currency_ticker=main),
+                                                    currency2=Currency.objects.get(currency_ticker=second),
+                                                    date=date,
+                                                    defaults={
+                                                        'open': data['Open'],
+                                                        'high': data['High'],
+                                                        'low': data['Low'],
+                                                        'close': data['Close'],
+                                                    })
+            print(f'{main}/{second} updated')
+        except IndexError:
+            continue
+

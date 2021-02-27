@@ -33,13 +33,13 @@
     <tbody>
         {% for deal in deals %}
             <tr>
-              <td>{{ deal.date }}</td>
-              <td>{{ deal.transaction_type }}</td>
-              <td>{{ deal.ticker }}</td>
-                <td>{{ deal.price }}</td>
-              <td>{{ deal.currency }}</td>
-              <td>{{ deal.quantity }}</td>
-              <td>{{ deal.total_cost }}</td>
+                <td>{{ deal.date }}</td>
+                <td>{{ deal.get_transaction_type_display }}</td>
+                <td>{{ deal.ticker }}</td>
+                <td>{{ deal.price | floatformat:2 }}</td>
+                <td>{{ deal.currency }}</td>
+                <td>{{ deal.quantity }}</td>
+                <td>{{ deal.total_cost | floatformat:2 }}</td>
             </tr>
         {% endfor %}
     </tbody>

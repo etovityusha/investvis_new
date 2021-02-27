@@ -14,11 +14,14 @@ def download_and_save_stock_data(obj):
     if obj.currency == Currency.objects.get(currency_ticker='RUB'):
         obj.ticker_yf += '.ME'
     sector, name, industry = _download_stock_info_from_yahoo_finance_website(obj.ticker_yf)
-    obj.sector = Sector.objects.get(sector_title=sector)
+    try:
+        obj.sector = Sector.objects.get(sector_title=sector)
+    except Sector.DoesNotExist:
+        obj.sector = Sector.objects.create(sector_title=sector, sector_rus=sector)
     try:
         obj.industry = Industry.objects.get(industry_title=industry, sector=obj.sector)
-    except:
-        obj.industry = Industry.objects.create(industry_title=industry, sector=obj.sector)
+    except Industry.DoesNotExist:
+        obj.industry = Industry.objects.create(industry_title=industry, industry_rus=industry, sector=obj.sector)
     obj.name = name
     try:
         _save_logo_from_tinkoff(obj.ticker)
