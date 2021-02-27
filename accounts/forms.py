@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 from . import models
 
@@ -22,10 +24,15 @@ class ProfileForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ProfileForm, self).clean()
         email = cleaned_data.get("email")
-        confirm_email = cleaned_data.get("confirm_email")
         bio = cleaned_data.get("bio")
 
-        if email != confirm_email:
-            raise forms.ValidationError(
-                "Emails must match!"
-            )
+
+class UserRegisterForms(UserCreationForm):
+    username = forms.CharField(label='Имя пользователя', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password1 = forms.CharField(label='Пароль', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(label='Подтверждение пароля', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailInput()
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2',)

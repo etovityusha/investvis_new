@@ -104,12 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
-            'min_length': 8,
+            'min_length': 5,
         }
     },
-    {'NAME': 'accounts.validators.UpperLowercaseValidator',},
-    {'NAME': 'accounts.validators.AtLeastOneNumber',},
-    {'NAME': 'accounts.validators.SymbolValidator',},
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
@@ -151,14 +148,10 @@ CELERY_TASK_SERIALAZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'update_quotations': {
         'task': 'stock.tasks.update_quotations',
-        'schedule': crontab(
-            minute=10, hour='10, 13, 15, 18, 19, 20, 21, 22, 23',
-            day_of_week='mon-fri'),
+        'schedule': 30,
     },
     'update_currency_quotations': {
             'task': 'stock.tasks.update_currency_quotations',
-            'schedule': crontab(
-                minute=10, hour='10, 13, 15, 18, 19, 20, 21, 22, 23',
-                day_of_week='mon-fri'),
+            'schedule': 30,
         },
 }

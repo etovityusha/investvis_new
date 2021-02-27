@@ -12,13 +12,13 @@ class Profile(models.Model):
         default='no-img.jpg',
         blank=True
     )
-    first_name = models.CharField(max_length=255, default='')
-    last_name = models.CharField(max_length=255, default='')
-    email = models.EmailField(default='none@email.com')
-    birth_date = models.DateField(default='1999-12-31')
-    bio = models.TextField(default='')
-    city = models.CharField(max_length=255, default='')
-    country = models.CharField(max_length=255, default='')
+    first_name = models.CharField(max_length=255, default='', blank=True)
+    last_name = models.CharField(max_length=255, default='', blank=True)
+    email = models.EmailField(default='none@email.com', blank=True)
+    birth_date = models.DateField(default='1999-12-31', blank=True)
+    bio = models.TextField(default='', blank=True)
+    city = models.CharField(max_length=255, default='', blank=True)
+    country = models.CharField(max_length=255, default='', blank=True)
     open_portfolio = models.BooleanField(default=False)
     analytics_currency = models.ForeignKey(Currency, default=2, on_delete=models.PROTECT)
 
