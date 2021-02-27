@@ -147,7 +147,7 @@ CELERY_TASK_SERIALAZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
     'update_quotations': {
-        'task': 'stock.tasks.update_quotations',
+        'task': 'stock.tasks.update_current_quotations',
         'schedule': 30,
     },
     'update_currency_quotations': {
