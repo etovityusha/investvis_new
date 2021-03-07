@@ -18,7 +18,7 @@ class Profile(models.Model):
     birth_date = models.DateField(default='1999-12-31', blank=True)
     bio = models.TextField(default='', blank=True)
     open_portfolio = models.BooleanField(default=False)
-    analytics_currency = models.ForeignKey(Currency, blank=True, on_delete=models.CASCADE)
+    analytics_currency = models.ForeignKey(Currency, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
