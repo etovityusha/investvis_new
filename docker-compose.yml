@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:10.1-alpine
+    volumes:
+    - postgres_data:/var/lib/postgresql/data/
+    env_file: investvis/.env
+  web:
+    build: .
+    command: bash -c "python /usr/src/dckr/manage.py migrate --noinput && python /usr/src/dckr/manage.py runserver 0.0.0.0:8000"
+    volumes:
+    - .:/usr/src/dckr
+    env_file: investvis/.env
+    environment:
+      - POSTGRES_HOST=db
+    ports:
+    - 8000:8000
+    depends_on:
+      - db
+volumes:
+  postgres_data:
