@@ -6,17 +6,43 @@ services:
     volumes:
     - postgres_data:/var/lib/postgresql/data/
     env_file: investvis/.env
+    environment:
+      - POSTGRES_DB=db
+
   web:
     build: .
-    command: bash -c "python /usr/src/dckr/manage.py migrate --noinput && python /usr/src/dckr/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python /usr/src/dckr/manage.py migrate --noinput
+      && python /usr/src/dckr/manage.py initadmin
+      && python /usr/src/dckr/manage.py initial_objects
+      && python /usr/src/dckr/manage.py runserver 0.0.0.0:8000"
     volumes:
     - .:/usr/src/dckr
     env_file: investvis/.env
     environment:
-      - POSTGRES_HOST=db
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
     ports:
     - 8000:8000
     depends_on:
       - db
+      - redis
+
+  celery:
+    build: .
+    command: celery -A investvis worker -l INFO
+    volumes:
+      - .:/usr/src/dckr
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+
+  redis:
+    image: "redis:alpine"
+
 volumes:
   postgres_data:
