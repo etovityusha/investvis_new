@@ -29,7 +29,7 @@ services:
 
   celery:
     build: .
-    command: celery -A investvis worker -l INFO
+    command: celery -A investvis worker -B -l INFO
     volumes:
       - .:/usr/src/dckr
     environment:

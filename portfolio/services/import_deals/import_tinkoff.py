@@ -66,6 +66,7 @@ def _filter_and_rename_columns(df: pd.DataFrame) -> pd.DataFrame:
              'Количество', 'Сумма сделки']]
     df.columns = ['date', 'transaction_type', 'ticker', 'price', 'currency', 'quantity', 'cost']
     df = df.dropna()
+    df = df[(df['transaction_type'] == 'Покупка') | (df['transaction_type'] == 'Продажа')]
     df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
     return df
 
