@@ -7,24 +7,17 @@ from . import models
 
 class ProfileForm(forms.ModelForm):
     avatar = forms.ImageField(label='Аватар')
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Имя')
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Фамилия')
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Имя', required=False)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Фамилия', required=False)
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    city = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Город')
-    birth_date = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Дата рождения')
-    country = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Страна')
-    confirm_email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), label='Подтвердите email')
-    bio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='О себе')
-    open_portfolio = forms.BooleanField(label='Открытый портфель')
+    birth_date = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='Дата рождения',
+                                 required=False)
+    bio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='О себе', required=False)
+    open_portfolio = forms.BooleanField(label='Открытый портфель', required=False)
 
     class Meta:
         model = models.Profile
         exclude = ('user', )
-
-    def clean(self):
-        cleaned_data = super(ProfileForm, self).clean()
-        email = cleaned_data.get("email")
-        bio = cleaned_data.get("bio")
 
 
 class UserRegisterForms(UserCreationForm):
