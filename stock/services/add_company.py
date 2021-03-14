@@ -45,7 +45,7 @@ def _download_stock_info_from_yahoo_finance_website(stock_ticker: str) -> tuple:
 def _save_logo_from_tinkoff(stock_ticker: str):
     page = requests.get(f'https://www.tinkoff.ru/invest/stocks/{stock_ticker}/')
     soup = BeautifulSoup(page.content)
-    logo_img = soup.findAll('span', {'class': 'Avatar-module__image_2WFrC'})
+    logo_img = soup.findAll('span', {'class': 'Avatar-module__image_ZCGVO'})
     image_url = 'http://' + _find_between(str(logo_img[0]), 'background-image:url(//', ')"></span>')
     urllib.request.urlretrieve(image_url, f"assets/images/logos/{stock_ticker}.png")
 
