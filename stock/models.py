@@ -70,6 +70,9 @@ class StockPrice(models.Model):
     close = models.DecimalField(verbose_name='Цена закрытия', max_digits=19, decimal_places=6)
     volume = models.IntegerField(verbose_name='Объём торгов')
 
+    def as_list_for_graph(self):
+        return [self.date, self.close]
+
     class Meta:
         verbose_name = 'Котировка'
         verbose_name_plural = 'Котировки'

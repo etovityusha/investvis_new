@@ -5,7 +5,9 @@ from django.views.generic import CreateView, DetailView
 
 from stock.services import add_company, stock_info
 from stock.forms import CompanyCreateForm
-from stock.models import Stock
+from stock.models import Stock, StockPrice
+
+import json
 
 
 class AddCompany(SuccessMessageMixin, LoginRequiredMixin, CreateView):
@@ -44,4 +46,29 @@ class StockDetail(DetailView):
         context['current_price'], context['last_day_change_percent'], context['last_day_change'] = stock_info.\
             get_current_price_and_last_day_change(self.object)
         context['graph'] = stock_info.graph(self.object)
+        return context
+
+
+class StockDetail2(DetailView):
+    """
+    Рендер страницы компании. Включает:
+        - информацию о компании
+        - сделки пользователя, отправившего запрос
+        - котировки
+    """
+    model = Stock
+    template_name = 'stock/ticker2.html'
+    slug_field = 'ticker'
+    slug_url_kwarg = 'ticker'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['data'] = stock_info.get_data_about_stock(self.object)
+        context['quotations'] = stock_info.get_stock_quotations(self.object, 30)
+        context['deals'] = stock_info.get_deals_with_this_stock(self.object, self.request.user)
+        context['open_position'] = stock_info.get_open_position(self.object, self.request.user)
+        context['closed_position'] = stock_info.get_closed_position(self.object, self.request.user)
+        context['current_price'], context['last_day_change_percent'], context['last_day_change'] = stock_info.\
+            get_current_price_and_last_day_change(self.object)
+        context['closes'] = json.dumps([StockPrice.as_list_for_graph(el) for el in StockPrice.objects.filter(ticker=self.object)])
         return context
