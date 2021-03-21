@@ -1,0 +1,182 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Акция : {{ data.ticker }}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <div class="container">
+
+            <div class="simple_card">
+                <div class="row">
+                    <div class="col-3">
+                        {% if data.logo %}
+                            <img class="circle_logotype" src="\static\images\logos\{{ data.ticker }}.png" height="200"
+                                 width=200">
+                        {% else %}
+                            <img src="assets\images\logos\unnamed.png" height="200" width="200">
+                        {% endif %}
+                    </div>
+
+                    <div class="col-6">
+                        <div class="h3">Тикер: {{ data.ticker }}</div>
+                        <div class="h5">Название компании: {{ data.name }}</div>
+                        <div class="h5">Валюта: {{ data.currency }}</div>
+                        <div class="h5">Сектор: {{ data.sector }}</div>
+                        <div class="h5">Индустрия: {{ data.industry }}</div>
+                    </div>
+
+                    <div class="stock_price">
+                        <h3>{{ current_price | floatformat:data.decimal_places }}</h3>
+                        {% if last_day_change < 0 %}
+                            <div class="last_day_change_negative"> {{ last_day_change | floatformat:data.decimal_places }}
+                            ({{ last_day_change_percent }}%)
+                        {% else %}
+                            <div class="last_day_change_positive"> +{{ last_day_change | floatformat:data.decimal_places }}
+                            (+{{ last_day_change_percent }}%)
+                        {% endif %}
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+
+                {% if open %}
+                    <p>
+                    <div class="simple_card">
+                    {% for item in open %}
+                        <h3>Портфель</h3>
+                        <p>Количество: {{ item.quantity }} шт.</p>
+                        <p>Средняя цена покупки: {{ item.average_buy_price | floatformat:data.decimal_places }} {{ data.currency }};
+                        Стоимость
+                            {% widthratio item.quantity 1 item.average_buy_price %} {{ data.currency }}
+                            &#187;
+                            {% widthratio item.quantity 1 current_price %} {{ data.currency }}
+                        </p>
+                    {% endfor %}
+                    </p>
+                {% endif %}
+
+                {% if closed %}
+                    <p>
+                        Вы продали
+                        {% for item in closed %}
+                            {{ item.quantity }} шт.
+                            {% widthratio item.quantity 1 item.average_buy_price %} {{ data.currency }} &#187;
+                            {% widthratio item.quantity 1 item.average_sell_price %} {{ data.currency }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                </div>
+
+            {% if open or closed %}
+                <p>
+                <div class="simple_card">
+                    <div class="row">
+                        <div class="h3">Сделки</div>
+                        <table class="table table-sm">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Дата</th>
+                                <th scope="col">Тип операции</th>
+                                <th scope="col">Цена</th>
+                                <th scope="col">Количество</th>
+                                <th scope="col">Общая стоимость</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for d in deals %}
+                                <tr>
+                                    <td>{{ d.date }}</td>
+                                    <td>{{ d.transaction_type }}</td>
+                                    <td>{{ d.price }} {{ d.currency }}</td>
+                                    <td>{{ d.quantity }}</td>
+                                    <td>{{ d.total_cost }} {{ d.currency }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </p>
+            {% endif %}
+            <p>
+
+                <p>
+                <div class="simple_card">
+                    <h3>График</h3>
+
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<div id="container" style="height: 400px; min-width: 310px">
+    <script>Highcharts.getJSON({{ closes }}, function (data) {
+    // Create the chart
+    Highcharts.stockChart('container', {
+
+
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: '{{ data.ticker }} Stock Price'
+        },
+
+        series: [{
+            name: '{{ data.ticker }}',
+            data: data,
+            tooltip: {
+                valueDecimals: {{ data.decimal_places }}
+            }
+        }]
+    });
+});
+</script>
+</div>
+                </div>
+                </p>
+
+                <div class="simple_card">
+                    <div class="row">
+                        <div class="h3">Котировки</div>
+                        <table class="table table-sm">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Дата</th>
+                                <th scope="col">Цена открытия</th>
+                                <th scope="col">Макс. цена</th>
+                                <th scope="col">Мин. цена</th>
+                                <th scope="col">Цена закрытия</th>
+                                <th scope="col">Объём торгов</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for q in quotations %}
+                                <tr>
+                                    <td>{{ q.date }}</td>
+                                    <td>{{ q.open | floatformat:data.decimal_places }}</td>
+                                    <td>{{ q.high | floatformat:data.decimal_places }}</td>
+                                    <td>{{ q.low | floatformat:data.decimal_places }}</td>
+                                    <td>{{ q.close | floatformat:data.decimal_places }}</td>
+                                    <td>{{ q.volume }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </p>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
