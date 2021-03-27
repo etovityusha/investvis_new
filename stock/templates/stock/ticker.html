@@ -33,16 +33,18 @@
                     <div class="stock_price">
                         <h3>{{ current_price | floatformat:data.decimal_places }}</h3>
                         {% if last_day_change < 0 %}
-                            <div class="last_day_change_negative"> {{ last_day_change | floatformat:data.decimal_places }}
+                            <div class="last_day_change_negative">
+                            {{ last_day_change | floatformat:data.decimal_places }}
                             ({{ last_day_change_percent }}%)
                         {% else %}
-                            <div class="last_day_change_positive"> +{{ last_day_change | floatformat:data.decimal_places }}
+                            <div class="last_day_change_positive"> +
+                            {{ last_day_change | floatformat:data.decimal_places }}
                             (+{{ last_day_change_percent }}%)
                         {% endif %}
-                            </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
                 {% if open %}
@@ -51,8 +53,9 @@
                     {% for item in open %}
                         <h3>Портфель</h3>
                         <p>Количество: {{ item.quantity }} шт.</p>
-                        <p>Средняя цена покупки: {{ item.average_buy_price | floatformat:data.decimal_places }} {{ data.currency }};
-                        Стоимость
+                        <p>Средняя цена
+                            покупки: {{ item.average_buy_price | floatformat:data.decimal_places }} {{ data.currency }};
+                            Стоимость
                             {% widthratio item.quantity 1 item.average_buy_price %} {{ data.currency }}
                             &#187;
                             {% widthratio item.quantity 1 current_price %} {{ data.currency }}
@@ -73,48 +76,74 @@
                 {% endif %}
                 </div>
 
-            {% if open or closed %}
+                {% if open or closed %}
+                    <p>
+                    <div class="simple_card">
+                        <div class="row">
+                            <div class="h3">Сделки</div>
+                            <table class="table table-sm">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Дата</th>
+                                    <th scope="col">Тип операции</th>
+                                    <th scope="col">Цена</th>
+                                    <th scope="col">Количество</th>
+                                    <th scope="col">Общая стоимость</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for d in deals %}
+                                    <tr>
+                                        <td>{{ d.date }}</td>
+                                        <td>{{ d.transaction_type }}</td>
+                                        <td>{{ d.price }} {{ d.currency }}</td>
+                                        <td>{{ d.quantity }}</td>
+                                        <td>{{ d.total_cost }} {{ d.currency }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </p>
+                {% endif %}
+                <p>
+
                 <p>
                 <div class="simple_card">
-                    <div class="row">
-                        <div class="h3">Сделки</div>
-                        <table class="table table-sm">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">Дата</th>
-                                <th scope="col">Тип операции</th>
-                                <th scope="col">Цена</th>
-                                <th scope="col">Количество</th>
-                                <th scope="col">Общая стоимость</th>
-                            </tr>
-                            </thead>
+                    <h3>График</h3>
 
-                            <tbody>
-                            {% for d in deals %}
-                                <tr>
-                                    <td>{{ d.date }}</td>
-                                    <td>{{ d.transaction_type }}</td>
-                                    <td>{{ d.price }} {{ d.currency }}</td>
-                                    <td>{{ d.quantity }}</td>
-                                    <td>{{ d.total_cost }} {{ d.currency }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+                    <script src="https://code.highcharts.com/stock/modules/data.js"></script>
+                    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+                    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+                    <div id="container" style="height: 400px; min-width: 310px">
+                        <script>Highcharts.getJSON('/api/quotes/{{ data.ticker }}/?format=json', function (data_plot) {
+                            Highcharts.stockChart('container', {
+
+
+                                rangeSelector: {
+                                    selected: 1
+                                },
+
+                                title: {
+                                    text: '{{ data.ticker }} Stock Price'
+                                },
+
+                                series: [{
+                                    name: '{{ data.ticker }}',
+                                    data: data_plot,
+                                    tooltip: {
+                                        valueDecimals: {{ data.decimal_places }}
+                                    }
+                                }]
+                            });
+                        });
+                        </script>
                     </div>
                 </div>
                 </p>
-            {% endif %}
-            <p>
-
-            <p>
-            <div class="simple_card">
-                <h3>График</h3>
-                {% if graph %}
-                    {{ graph|safe }}
-                {% endif %}
-            </div>
-            </p>
 
                 <div class="simple_card">
                     <div class="row">
@@ -146,7 +175,7 @@
                         </table>
                     </div>
                 </div>
-            </p>
+                </p>
 
             </div>
         </div>
