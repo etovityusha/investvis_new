@@ -43,5 +43,4 @@ class StockDetail(DetailView):
         context['closed_position'] = stock_info.get_closed_position(self.object, self.request.user)
         context['current_price'], context['last_day_change_percent'], context['last_day_change'] = stock_info.\
             get_current_price_and_last_day_change(self.object)
-        context['graph'] = stock_info.graph(self.object)
         return context

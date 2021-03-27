@@ -1,5 +1,6 @@
 from django.db import models
-
+import time
+import datetime
 
 class Sector(models.Model):
     sector_title = models.CharField(max_length=50, unique=True, verbose_name='Сектор')
@@ -69,6 +70,11 @@ class StockPrice(models.Model):
     low = models.DecimalField(verbose_name='Минимальная цена', max_digits=19, decimal_places=6)
     close = models.DecimalField(verbose_name='Цена закрытия', max_digits=19, decimal_places=6)
     volume = models.IntegerField(verbose_name='Объём торгов')
+
+    @property
+    def date_to_timestamp_in_ms(self):
+        return time.mktime(datetime.datetime.strptime(
+            datetime.datetime.strftime(self.date, "%Y-%m-%d"), "%Y-%m-%d").timetuple()) * 1000
 
     class Meta:
         verbose_name = 'Котировка'
