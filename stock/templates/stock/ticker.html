@@ -119,7 +119,7 @@
                     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
                     <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
                     <div id="container" style="height: 400px; min-width: 310px">
-                        <script>Highcharts.getJSON('/api/quotes/{{ data.ticker }}/?format=json', function (data_plot) {
+                        <script>
                             Highcharts.stockChart('container', {
 
 
@@ -133,18 +133,16 @@
 
                                 series: [{
                                     name: '{{ data.ticker }}',
-                                    data: data_plot,
+                                    data: {{ data_plot }},
                                     tooltip: {
                                         valueDecimals: {{ data.decimal_places }}
                                     }
                                 }]
                             });
-                        });
                         </script>
                     </div>
                 </div>
                 </p>
-
                 <div class="simple_card">
                     <div class="row">
                         <div class="h3">Котировки</div>

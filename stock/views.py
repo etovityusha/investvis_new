@@ -5,7 +5,7 @@ from django.views.generic import CreateView, DetailView
 
 from stock.services import add_company, stock_info
 from stock.forms import CompanyCreateForm
-from stock.models import Stock
+from stock.models import Stock, StockPrice
 
 
 class AddCompany(SuccessMessageMixin, LoginRequiredMixin, CreateView):
@@ -43,4 +43,6 @@ class StockDetail(DetailView):
         context['closed_position'] = stock_info.get_closed_position(self.object, self.request.user)
         context['current_price'], context['last_day_change_percent'], context['last_day_change'] = stock_info.\
             get_current_price_and_last_day_change(self.object)
+        context['data_plot'] = [[el.date_to_timestamp_in_ms, round(float(el.close), 2)] for el in
+                                StockPrice.objects.filter(ticker=self.object.pk).order_by('date')]
         return context

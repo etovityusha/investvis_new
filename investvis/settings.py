@@ -32,7 +32,9 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+]
 
 
 # Application definition
@@ -44,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+
     'accounts',
     'blog.apps.BlogConfig',
     'portfolio.apps.PortfolioConfig',
@@ -148,10 +150,10 @@ CELERY_TASK_SERIALAZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'update_quotations': {
         'task': 'stock.tasks.update_current_quotations',
-        'schedule': 30,
+        'schedule': '*/10',
     },
     'update_currency_quotations': {
             'task': 'stock.tasks.update_currency_quotations',
-            'schedule': 30,
+            'schedule': '*/10',
         },
 }
