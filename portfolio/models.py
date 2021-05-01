@@ -31,6 +31,9 @@ class BrokerReport(models.Model):
         verbose_name_plural = 'Отчёты'
         ordering = ['uploaded']
 
+    def __str__(self):
+        return f'Broker Report instance from {self.user.username}'
+
 
 class Deal(models.Model):
     TRANSACTIONS = (
