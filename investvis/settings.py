@@ -34,8 +34,8 @@ DEBUG = env.bool('DEBUG')
 
 ALLOWED_HOSTS = [
     '0.0.0.0',
+    '127.0.0.1',
 ]
-
 
 # Application definition
 
@@ -83,7 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'investvis.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -97,7 +96,6 @@ DATABASES = {
         'PORT': env.str('DATABASE_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -114,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -128,7 +125,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -141,11 +137,9 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'accounts/avatars')
 
-
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALAZER = 'json'
-
 
 CELERY_BEAT_SCHEDULE = {
     'update_quotations': {
@@ -153,7 +147,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': '*/10',
     },
     'update_currency_quotations': {
-            'task': 'stock.tasks.update_currency_quotations',
-            'schedule': '*/10',
-        },
+        'task': 'stock.tasks.update_currency_quotations',
+        'schedule': '*/10',
+    },
 }

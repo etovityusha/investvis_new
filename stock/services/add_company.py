@@ -25,7 +25,7 @@ def download_and_save_stock_data(obj):
     obj.name = name
     try:
         _save_logo_from_tinkoff(obj.ticker)
-        obj.logo = f'assets/images/logos/{obj.ticker}.png'
+        obj.logo = f'static/media/logos/{obj.ticker}.png'
     except:
         pass
     return obj
@@ -47,7 +47,7 @@ def _save_logo_from_tinkoff(stock_ticker: str):
     soup = BeautifulSoup(page.content)
     logo_img = soup.findAll('span', {'class': 'Avatar-module__image_ZCGVO'})
     image_url = 'http://' + _find_between(str(logo_img[0]), 'background-image:url(//', ')"></span>')
-    urllib.request.urlretrieve(image_url, f"assets/images/logos/{stock_ticker}.png")
+    urllib.request.urlretrieve(image_url, f"static/media/logos/{stock_ticker}.png")
 
 
 def _find_between(s, first, last):
